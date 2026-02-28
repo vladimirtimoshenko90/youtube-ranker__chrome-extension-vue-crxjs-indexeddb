@@ -1,6 +1,7 @@
 import type { VideoReview } from '../infrastructure/storage';
 import { authorReviewsCache } from './author-reviews-cache';
 import { authorReviewsStorage } from '../infrastructure/storage';
+import { broadcastAuthorReview } from './broadcast-events';
 
 // Storage message action constants
 export const STORAGE_MESSAGE_ACTIONS = {
@@ -47,6 +48,7 @@ function handleStorageMessage(
 			case STORAGE_MESSAGE_ACTIONS.DELETE_AUTHOR: {
 				result = await authorReviewsStorage.deleteAuthor(params.authorUrl);
 				authorReviewsCache.remove(params.authorUrl);
+				broadcastAuthorReview(null, params.authorUrl);
 				break;
 			}
 
@@ -59,6 +61,7 @@ function handleStorageMessage(
 				);
 				const updatedAuthor = await authorReviewsStorage.getAuthor(params.authorUrl);
 				authorReviewsCache.upsert(params.authorUrl, updatedAuthor);
+				broadcastAuthorReview(updatedAuthor, params.authorUrl);
 				break;
 			}
 
@@ -66,6 +69,7 @@ function handleStorageMessage(
 				await authorReviewsStorage.deleteVideoReview(params.authorUrl, params.videoUrl);
 				const updatedAuthor = await authorReviewsStorage.getAuthor(params.authorUrl);
 				authorReviewsCache.upsert(params.authorUrl, updatedAuthor);
+				broadcastAuthorReview(updatedAuthor, params.authorUrl);
 				break;
 			}
 

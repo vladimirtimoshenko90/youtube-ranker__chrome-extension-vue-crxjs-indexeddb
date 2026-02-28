@@ -1,4 +1,4 @@
-import type { AuthorReview } from '../infrastructure/storage';
+import type { AuthorReview } from '../../infrastructure/storage';
 
 /**
  * In-memory cache for author reviews to reduce database queries

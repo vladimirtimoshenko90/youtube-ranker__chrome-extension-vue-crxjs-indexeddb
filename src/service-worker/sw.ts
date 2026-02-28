@@ -1,7 +1,5 @@
-import { registerStorageMessageHandlers } from './storage-message-handlers';
+import { openOverviewOnActionClick } from './overview-page/openOverviewOnActionClick';
+import { registerStorageMessageHandlers } from './storage-messages/registerStorageMessageHandlers';
 
-chrome.action.onClicked.addListener(() => {
-	chrome.tabs.create({ url: 'src/pages/overview.html' });
-});
-
+openOverviewOnActionClick();
 registerStorageMessageHandlers();

@@ -1,7 +1,7 @@
-import type { VideoReview } from '../infrastructure/storage';
+import type { VideoReview } from '../../infrastructure/storage';
 import { authorReviewsCache } from './author-reviews-cache';
-import { authorReviewsStorage } from '../infrastructure/storage';
-import { broadcastAuthorReview } from './broadcast-events';
+import { authorReviewsStorage } from '../../infrastructure/storage';
+import { broadcastAuthorReview } from '../broadcast-events/broadcastAuthorReview';
 
 // Storage message action constants
 export const STORAGE_MESSAGE_ACTIONS = {

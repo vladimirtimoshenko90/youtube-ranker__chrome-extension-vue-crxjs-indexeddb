@@ -5,6 +5,8 @@ export default defineManifest({
 	manifest_version: 3,
 	name: pkg.name,
 	version: pkg.version,
+	permissions: ['tabs'],
+	host_permissions: ['https://www.youtube.com/*'],
 	icons: {
 		48: 'public/logo.png'
 	},

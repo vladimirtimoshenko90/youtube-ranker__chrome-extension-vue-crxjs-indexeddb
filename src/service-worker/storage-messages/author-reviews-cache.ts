@@ -16,6 +16,21 @@ class AuthorReviewsCache {
 	}
 
 	/**
+	 * Get author from cache or fetch using callback if not cached
+	 * If cache miss, calls the callback to fetch/compute the value, caches it, and returns it
+	 */
+	async getOrAdd(authorUrl: string, getData: () => Promise<AuthorReview | null>): Promise<AuthorReview | null> {
+		const cached = this.get(authorUrl);
+		if (cached !== undefined) {
+			return cached;
+		}
+
+		const author = await getData();
+		this._cache.set(authorUrl, author);
+		return author;
+	}
+
+	/**
 	 * Upsert author in cache (update if exists, insert if not)
 	 * Stores both AuthorReview objects and null values
 	 */

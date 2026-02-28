@@ -35,18 +35,14 @@ function handleStorageMessage(
 		switch (action) {
 			// Author operations
 			case STORAGE_MESSAGE_ACTIONS.GET_AUTHOR: {
-				const cached = authorReviewsCache.get(params.authorUrl);
-				if (cached !== undefined) {
-					result = cached;
-				} else {
-					result = await authorReviewsStorage.getAuthor(params.authorUrl);
-					authorReviewsCache.upsert(params.authorUrl, result);
-				}
+				result = await authorReviewsCache.getOrAdd(params.authorUrl, () =>
+					authorReviewsStorage.getAuthor(params.authorUrl)
+				);
 				break;
 			}
 
 			case STORAGE_MESSAGE_ACTIONS.DELETE_AUTHOR: {
-				result = await authorReviewsStorage.deleteAuthor(params.authorUrl);
+				await authorReviewsStorage.deleteAuthor(params.authorUrl);
 				authorReviewsCache.remove(params.authorUrl);
 				broadcastAuthorReview(null, params.authorUrl);
 				break;
@@ -74,14 +70,9 @@ function handleStorageMessage(
 			}
 
 			case STORAGE_MESSAGE_ACTIONS.GET_VIDEO_REVIEW: {
-				const cached = authorReviewsCache.get(params.authorUrl);
-				let author: any;
-				if (cached !== undefined) {
-					author = cached;
-				} else {
-					author = await authorReviewsStorage.getAuthor(params.authorUrl);
-					authorReviewsCache.upsert(params.authorUrl, author);
-				}
+				const author = await authorReviewsCache.getOrAdd(params.authorUrl, () =>
+					authorReviewsStorage.getAuthor(params.authorUrl)
+				);
 				result = author?.reviews.find((v: any) => v.videoUrl === params.videoUrl) || null;
 				break;
 			}

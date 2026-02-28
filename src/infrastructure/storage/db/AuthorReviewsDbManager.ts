@@ -4,13 +4,25 @@ import { AUTHOR_REVIEWS_DB_CONFIG } from './AuthorReviewsDbConfig';
  * Manages IndexedDB connection and initialization for AuthorReviews
  */
 export class AuthorReviewsDbManager {
-	private db: IDBDatabase | null = null;
+	private _instance: IDBDatabase | null = null;
+	private _initPromise: Promise<IDBDatabase> | null = null;
 
 	/**
-	 * Initialize and open the IndexedDB database
+	 * Get the database instance, initializes if needed
+	 * Handles concurrent calls by reusing the same initialization promise
 	 */
-	async init(): Promise<IDBDatabase> {
-		return new Promise((resolve, reject) => {
+	async getDB(): Promise<IDBDatabase> {
+		if (this._instance) {
+			return this._instance;
+		}
+
+		// If initialization is already in progress, wait for it
+		if (this._initPromise) {
+			return this._initPromise;
+		}
+
+		// Start initialization and cache the promise for concurrent calls
+		this._initPromise = new Promise<IDBDatabase>((resolve, reject) => {
 			const request = indexedDB.open(AUTHOR_REVIEWS_DB_CONFIG.name, AUTHOR_REVIEWS_DB_CONFIG.version);
 
 			request.onerror = () => {
@@ -18,8 +30,8 @@ export class AuthorReviewsDbManager {
 			};
 
 			request.onsuccess = () => {
-				this.db = request.result;
-				resolve(this.db);
+				this._instance = request.result;
+				resolve(this._instance);
 			};
 
 			request.onupgradeneeded = (event) => {
@@ -38,25 +50,18 @@ export class AuthorReviewsDbManager {
 				}
 			};
 		});
-	}
 
-	/**
-	 * Get the database instance, initializes if needed
-	 */
-	async getDB(): Promise<IDBDatabase> {
-		if (!this.db) {
-			await this.init();
-		}
-		return this.db!;
+		return this._initPromise;
 	}
 
 	/**
 	 * Close the database connection
 	 */
 	close(): void {
-		if (this.db) {
-			this.db.close();
-			this.db = null;
+		if (this._instance) {
+			this._instance.close();
+			this._instance = null;
+			this._initPromise = null;
 		}
 	}
 }

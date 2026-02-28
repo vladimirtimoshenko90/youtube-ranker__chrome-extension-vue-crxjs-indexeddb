@@ -1,4 +1,5 @@
 import type { VideoReview } from '../infrastructure/storage';
+import { authorReviewsCache } from './author-reviews-cache';
 import { authorReviewsStorage } from '../infrastructure/storage';
 
 // Storage message action constants
@@ -28,49 +29,64 @@ function handleStorageMessage(
 
 	// Handle storage operations asynchronously
 	(async () => {
-		try {
-			let result;
+		let result;
 
-			switch (action) {
-				// Author operations
-				case STORAGE_MESSAGE_ACTIONS.GET_AUTHOR:
+		switch (action) {
+			// Author operations
+			case STORAGE_MESSAGE_ACTIONS.GET_AUTHOR: {
+				const cached = authorReviewsCache.get(params.authorUrl);
+				if (cached !== undefined) {
+					result = cached;
+				} else {
 					result = await authorReviewsStorage.getAuthor(params.authorUrl);
-					break;
-
-				case STORAGE_MESSAGE_ACTIONS.DELETE_AUTHOR:
-					result = await authorReviewsStorage.deleteAuthor(params.authorUrl);
-					break;
-
-				// Video review operations
-				case STORAGE_MESSAGE_ACTIONS.UPSERT_VIDEO_REVIEW:
-					result = await authorReviewsStorage.upsertVideoReview(
-						params.authorUrl,
-						params.authorName,
-						params.videoReview as VideoReview
-					);
-					break;
-
-				case STORAGE_MESSAGE_ACTIONS.DELETE_VIDEO_REVIEW:
-					result = await authorReviewsStorage.deleteVideoReview(params.authorUrl, params.videoUrl);
-					break;
-
-				case STORAGE_MESSAGE_ACTIONS.GET_VIDEO_REVIEW:
-					const author = await authorReviewsStorage.getAuthor(params.authorUrl);
-					result = author?.reviews.find((v) => v.videoUrl === params.videoUrl) || null;
-					break;
-
-				default:
-					throw new Error(`Unknown action: ${action}`);
+					authorReviewsCache.upsert(params.authorUrl, result);
+				}
+				break;
 			}
 
-			sendResponse({ success: true, data: result });
-		} catch (error) {
-			console.error(`Storage operation failed: ${action}`, error);
-			sendResponse({
-				success: false,
-				error: error instanceof Error ? error.message : 'Unknown error'
-			});
+			case STORAGE_MESSAGE_ACTIONS.DELETE_AUTHOR: {
+				result = await authorReviewsStorage.deleteAuthor(params.authorUrl);
+				authorReviewsCache.remove(params.authorUrl);
+				break;
+			}
+
+			// Video review operations
+			case STORAGE_MESSAGE_ACTIONS.UPSERT_VIDEO_REVIEW: {
+				await authorReviewsStorage.upsertVideoReview(
+					params.authorUrl,
+					params.authorName,
+					params.videoReview as VideoReview
+				);
+				const updatedAuthor = await authorReviewsStorage.getAuthor(params.authorUrl);
+				authorReviewsCache.upsert(params.authorUrl, updatedAuthor);
+				break;
+			}
+
+			case STORAGE_MESSAGE_ACTIONS.DELETE_VIDEO_REVIEW: {
+				await authorReviewsStorage.deleteVideoReview(params.authorUrl, params.videoUrl);
+				const updatedAuthor = await authorReviewsStorage.getAuthor(params.authorUrl);
+				authorReviewsCache.upsert(params.authorUrl, updatedAuthor);
+				break;
+			}
+
+			case STORAGE_MESSAGE_ACTIONS.GET_VIDEO_REVIEW: {
+				const cached = authorReviewsCache.get(params.authorUrl);
+				let author: any;
+				if (cached !== undefined) {
+					author = cached;
+				} else {
+					author = await authorReviewsStorage.getAuthor(params.authorUrl);
+					authorReviewsCache.upsert(params.authorUrl, author);
+				}
+				result = author?.reviews.find((v: any) => v.videoUrl === params.videoUrl) || null;
+				break;
+			}
+
+			default:
+				throw new Error(`Unknown action: ${action}`);
 		}
+
+		sendResponse(result);
 	})();
 
 	// Return true to indicate we will send response asynchronously

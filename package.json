@@ -16,6 +16,7 @@
     "@types/node": "^24.0.15",
     "@vitejs/plugin-vue": "^6.0.0",
     "@vue/tsconfig": "^0.7.0",
+    "sass": "^1.97.3",
     "typescript": "~5.8.3",
     "vite": "^7.0.5",
     "vite-plugin-zip-pack": "^1.2.4",

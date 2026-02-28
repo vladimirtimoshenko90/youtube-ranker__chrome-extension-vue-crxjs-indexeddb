@@ -1,52 +1,41 @@
-# Vue 3 + Vite + CRXJS
+# YouTube Ranker - Chrome Extension
 
-This template helps you quickly start developing Chrome extensions with Vue 3, TypeScript and Vite. It includes the CRXJS Vite plugin for seamless Chrome extension development.
+A powerful Chrome extension that brings personalized video and channel ratings to YouTube. Rate videos, channels, and creators as you browse, and instantly see your ratings across the platform with intelligent organization and filtering.
 
 ## Features
 
-- Vue 3 with `<script setup>` syntax
-- TypeScript support
-- Vite build tool
-- CRXJS Vite plugin integration
-- Chrome extension manifest configuration
+- **Rate & Track**: 5-star rating system for videos, channels, and creators
+- **Seamless Integration**: Ratings displayed on YouTube home, search, and watch pages
+- **Local Storage**: All ratings stored privately using IndexedDB—no cloud sync needed
+- **Multi-Page Support**: Dedicated content scripts for different YouTube page types
+- **Organized Dashboard**: Overview page to manage all your ratings at a glance
 
 ## Quick Start
 
-1. Install dependencies:
-
 ```bash
+# Install dependencies
 npm install
-```
 
-2. Start development server:
-
-```bash
+# Start development
 npm run dev
 ```
 
-3. Open Chrome and navigate to `chrome://extensions/`, enable "Developer mode", and load the unpacked extension from the `dist` directory.
+Then in Chrome:
 
-4. Build for production:
+- Go to `chrome://extensions/`
+- Enable "Developer mode"
+- Click "Load unpacked" and select the `dist` folder
+
+For production:
 
 ```bash
 npm run build
 ```
 
-## Project Structure
+## Tech Stack
 
-- `src/popup/` - Extension popup UI
-- `src/content/` - Content scripts
-- `manifest.config.ts` - Chrome extension manifest configuration
-
-## Documentation
-
-- [Vue 3 Documentation](https://vuejs.org/)
-- [Vite Documentation](https://vitejs.dev/)
-- [CRXJS Documentation](https://crxjs.dev/vite-plugin)
-
-## Chrome Extension Development Notes
-
-- Use `manifest.config.ts` to configure your extension
-- The CRXJS plugin automatically handles manifest generation
-- Content scripts should be placed in `src/content/`
-- Popup UI should be placed in `src/popup/`
+- **Vue 3** with TypeScript and `<script setup>` syntax
+- **Vite** for instant HMR and optimized builds
+- **CRXJS** for seamless Chrome extension development
+- **IndexedDB** for local data persistence
+- **SCSS** for advanced styling

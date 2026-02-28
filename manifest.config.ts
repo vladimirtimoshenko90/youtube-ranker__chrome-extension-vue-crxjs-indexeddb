@@ -6,22 +6,33 @@ export default defineManifest({
 	name: pkg.name,
 	version: pkg.version,
 	icons: {
-		48: 'public/logo.png',
+		48: 'public/logo.png'
 	},
 	action: {
 		default_icon: {
-			48: 'public/logo.png',
-		},
-		default_popup: 'src/popup/index.html',
+			48: 'public/logo.png'
+		}
 	},
 	content_scripts: [
 		{
-			js: ['src/content/main.ts'],
-			matches: ['https://*/*'],
+			js: ['src/content-scripts/home/main.ts'],
+			matches: ['https://www.youtube.com/']
 		},
+		{
+			js: ['src/content-scripts/search/main.ts'],
+			matches: ['https://www.youtube.com/results*']
+		},
+		{
+			js: ['src/content-scripts/watch-main/main.ts'],
+			matches: ['https://www.youtube.com/watch*']
+		},
+		{
+			js: ['src/content-scripts/watch-sidebar/main.ts'],
+			matches: ['https://www.youtube.com/watch*']
+		}
 	],
-	permissions: ['sidePanel', 'contentSettings'],
-	side_panel: {
-		default_path: 'src/sidepanel/index.html',
-	},
+	background: {
+		service_worker: 'src/service-worker/sw.ts',
+		type: 'module'
+	}
 });

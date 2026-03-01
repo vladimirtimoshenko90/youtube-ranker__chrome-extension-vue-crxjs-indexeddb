@@ -70,6 +70,35 @@ export class AuthorReviewsStorage {
 	}
 
 	/**
+	 * Get a specific video review by video URL (globally unique)
+	 */
+	async getVideoReview(videoUrl: string): Promise<VideoReview | null> {
+		const db = await dbManager.getDB();
+		return new Promise((resolve, reject) => {
+			const transaction = db.transaction([this.storeName], 'readonly');
+			const store = transaction.objectStore(this.storeName);
+			const index = store.index('videoUrl');
+			const request = index.get(videoUrl);
+
+			request.onerror = () => {
+				reject(new Error(`Failed to get video review: ${request.error}`));
+			};
+
+			request.onsuccess = () => {
+				// Index returns the entire AuthorReview, extract the specific video
+				const author = request.result;
+				if (!author) {
+					resolve(null);
+					return;
+				}
+
+				const videoReview = author.reviews.find((v: VideoReview) => v.videoUrl === videoUrl);
+				resolve(videoReview || null);
+			};
+		});
+	}
+
+	/**
 	 * Upsert a video review for an author
 	 * If author doesn't exist, creates it with the video review
 	 * If author exists, adds or updates the video review

@@ -21,7 +21,7 @@
 </script>
 
 <template>
-	<div class="video-metrics" @click="videoRating && (isModalOpen = true)">
+	<div class="video-metrics" @click="isModalOpen = true">
 		<div class="rating-item">
 			<span>Video</span>
 			<Rating

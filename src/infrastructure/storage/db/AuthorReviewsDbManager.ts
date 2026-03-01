@@ -37,14 +37,19 @@ export class AuthorReviewsDbManager {
 			request.onupgradeneeded = (event) => {
 				const db = (event.target as IDBOpenDBRequest).result;
 
-				// Create stores
+				// Create store if it doesn't exist
+				let store: IDBObjectStore;
 				if (!db.objectStoreNames.contains('authorReviews')) {
-					const store = db.createObjectStore('authorReviews', {
+					store = db.createObjectStore('authorReviews', {
 						keyPath: AUTHOR_REVIEWS_DB_CONFIG.stores.authorReviews.keyPath
 					});
+				} else {
+					store = (event.target as IDBOpenDBRequest).transaction!.objectStore('authorReviews');
+				}
 
-					// Create indexes
-					for (const index of AUTHOR_REVIEWS_DB_CONFIG.stores.authorReviews.indexes) {
+				// Create indexes if they don't exist
+				for (const index of AUTHOR_REVIEWS_DB_CONFIG.stores.authorReviews.indexes) {
+					if (!store.indexNames.contains(index.name)) {
 						store.createIndex(index.name, index.keyPath, index.options);
 					}
 				}

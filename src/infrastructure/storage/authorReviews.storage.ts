@@ -29,6 +29,27 @@ export class AuthorReviewsStorage {
 	}
 
 	/**
+	 * Get an author review by name
+	 */
+	async getAuthorByName(authorName: string): Promise<AuthorReview | null> {
+		const db = await dbManager.getDB();
+		return new Promise((resolve, reject) => {
+			const transaction = db.transaction([this.storeName], 'readonly');
+			const store = transaction.objectStore(this.storeName);
+			const index = store.index('authorName');
+			const request = index.get(authorName);
+
+			request.onerror = () => {
+				reject(new Error(`Failed to get author by name: ${request.error}`));
+			};
+
+			request.onsuccess = () => {
+				resolve(request.result || null);
+			};
+		});
+	}
+
+	/**
 	 * Delete an author review by URL
 	 */
 	async deleteAuthor(authorUrl: string): Promise<void> {

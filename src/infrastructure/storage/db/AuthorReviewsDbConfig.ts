@@ -17,7 +17,7 @@ export interface AuthorReviewsDbConfig {
  */
 export const AUTHOR_REVIEWS_DB_CONFIG: AuthorReviewsDbConfig = {
 	name: 'authorReviewsDb',
-	version: 1,
+	version: 2,
 	stores: {
 		authorReviews: {
 			keyPath: 'authorUrl',
@@ -25,6 +25,11 @@ export const AUTHOR_REVIEWS_DB_CONFIG: AuthorReviewsDbConfig = {
 				{
 					name: 'lastUpdated',
 					keyPath: 'lastUpdated',
+					options: { unique: false }
+				},
+				{
+					name: 'authorName',
+					keyPath: 'authorName',
 					options: { unique: false }
 				}
 			]

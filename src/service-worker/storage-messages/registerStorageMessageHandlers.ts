@@ -5,12 +5,12 @@ import { broadcastAuthorReview } from '../broadcast-events/broadcastAuthorReview
 
 // Storage message action constants
 export const STORAGE_MESSAGE_ACTIONS = {
-	GET_AUTHOR: 'getAuthor',
+	GET_AUTHOR_BY_URL: 'getAuthor',
 	GET_AUTHOR_BY_NAME: 'getAuthorByName',
 	DELETE_AUTHOR: 'deleteAuthor',
+	GET_VIDEO_REVIEW: 'getVideoReview',
 	UPSERT_VIDEO_REVIEW: 'upsertVideoReview',
-	DELETE_VIDEO_REVIEW: 'deleteVideoReview',
-	GET_VIDEO_REVIEW: 'getVideoReview'
+	DELETE_VIDEO_REVIEW: 'deleteVideoReview'
 } as const;
 
 /**
@@ -35,7 +35,7 @@ function handleStorageMessage(
 
 		switch (action) {
 			// Author operations
-			case STORAGE_MESSAGE_ACTIONS.GET_AUTHOR: {
+			case STORAGE_MESSAGE_ACTIONS.GET_AUTHOR_BY_URL: {
 				result = await authorReviewsCache.getOrAdd(params.authorUrl, () =>
 					authorReviewsStorage.getAuthor(params.authorUrl)
 				);
@@ -56,6 +56,11 @@ function handleStorageMessage(
 			}
 
 			// Video review operations
+			case STORAGE_MESSAGE_ACTIONS.GET_VIDEO_REVIEW: {
+				result = await authorReviewsStorage.getVideoReview(params.videoUrl);
+				break;
+			}
+
 			case STORAGE_MESSAGE_ACTIONS.UPSERT_VIDEO_REVIEW: {
 				await authorReviewsStorage.upsertVideoReview(
 					params.authorUrl,
@@ -73,14 +78,6 @@ function handleStorageMessage(
 				const updatedAuthor = await authorReviewsStorage.getAuthor(params.authorUrl);
 				authorReviewsCache.upsert(params.authorUrl, updatedAuthor);
 				broadcastAuthorReview(updatedAuthor, params.authorUrl);
-				break;
-			}
-
-			case STORAGE_MESSAGE_ACTIONS.GET_VIDEO_REVIEW: {
-				const author = await authorReviewsCache.getOrAdd(params.authorUrl, () =>
-					authorReviewsStorage.getAuthor(params.authorUrl)
-				);
-				result = author?.reviews.find((v: any) => v.videoUrl === params.videoUrl) || null;
 				break;
 			}
 

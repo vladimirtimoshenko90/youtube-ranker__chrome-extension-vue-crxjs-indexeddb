@@ -1,0 +1,22 @@
+.rating-root {
+	position: absolute;
+	top: 0;
+	z-index: 1100;
+	background: rgba(255, 255, 255, 0.5);
+}
+
+.rating-root.rating-root__home {
+	right: 0;
+}
+
+.rating-root.rating-root__search {
+	left: 0;
+}
+
+.rating-root.rating-root__watch-main {
+	right: 0;
+}
+
+.rating-root.rating-root__watch-sidebar {
+	right: 0;
+}

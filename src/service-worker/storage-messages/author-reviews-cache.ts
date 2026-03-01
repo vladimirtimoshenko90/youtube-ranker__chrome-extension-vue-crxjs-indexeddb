@@ -2,40 +2,46 @@ import type { AuthorReview } from '../../infrastructure/storage';
 
 /**
  * In-memory cache for author reviews to reduce database queries
- * Caches both existing authors and null values to avoid repeated DB queries
+ * Caches promises to prevent duplicate DB queries when multiple concurrent requests hit the same key
  */
 class AuthorReviewsCache {
-	private _cache = new Map<string, AuthorReview | null>();
+	private _cache = new Map<string, Promise<AuthorReview | null>>();
 
 	/**
 	 * Get author from cache
-	 * Returns undefined if not cached, null if cached as non-existent, or AuthorReview if cached
+	 * Returns cached promise if available, or resolved promise with null if not cached
 	 */
-	get(authorUrl: string): AuthorReview | null | undefined {
-		return this._cache.has(authorUrl) ? (this._cache.get(authorUrl) ?? null) : undefined;
+	get(authorUrl: string): Promise<AuthorReview | null> {
+		return this._cache.get(authorUrl) ?? Promise.resolve(null);
 	}
 
 	/**
 	 * Get author from cache or fetch using callback if not cached
-	 * If cache miss, calls the callback to fetch/compute the value, caches it, and returns it
+	 * Caches the promise to ensure concurrent calls share the same DB query
+	 * Clears cache on rejection to allow retry on next call
 	 */
-	async getOrAdd(authorUrl: string, getData: () => Promise<AuthorReview | null>): Promise<AuthorReview | null> {
-		const cached = this.get(authorUrl);
-		if (cached !== undefined) {
+	getOrAdd(authorUrl: string, getData: () => Promise<AuthorReview | null>): Promise<AuthorReview | null> {
+		const cached = this._cache.get(authorUrl);
+		if (cached) {
 			return cached;
 		}
 
-		const author = await getData();
-		this._cache.set(authorUrl, author);
-		return author;
+		const promise = getData().catch((error) => {
+			// On error, remove from cache to allow retry
+			this._cache.delete(authorUrl);
+			throw error;
+		});
+		this._cache.set(authorUrl, promise);
+
+		return promise;
 	}
 
 	/**
-	 * Upsert author in cache (update if exists, insert if not)
-	 * Stores both AuthorReview objects and null values
+	 * Upsert author in cache
+	 * Stores a resolved value as a cached promise
 	 */
 	upsert(authorUrl: string, author: AuthorReview | null): void {
-		this._cache.set(authorUrl, author);
+		this._cache.set(authorUrl, Promise.resolve(author));
 	}
 
 	/**

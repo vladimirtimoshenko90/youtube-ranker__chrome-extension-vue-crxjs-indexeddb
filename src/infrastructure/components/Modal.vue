@@ -26,22 +26,24 @@
 </script>
 
 <template>
-	<div v-if="isOpen" class="modal-overlay" @click.self="$emit('close')">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h2>{{ title }}</h2>
-				<button class="close-btn" @click="$emit('close')">×</button>
-			</div>
+	<Teleport to="body">
+		<div v-if="isOpen" class="modal-overlay" @click.self="$emit('close')">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h2>{{ title }}</h2>
+					<button class="close-btn" @click="$emit('close')">×</button>
+				</div>
 
-			<div class="modal-body">
-				<slot></slot>
-			</div>
+				<div class="modal-body">
+					<slot></slot>
+				</div>
 
-			<div v-if="$slots.footer" class="modal-footer">
-				<slot name="footer"></slot>
+				<div v-if="$slots.footer" class="modal-footer">
+					<slot name="footer"></slot>
+				</div>
 			</div>
 		</div>
-	</div>
+	</Teleport>
 </template>
 
 <style scoped lang="scss">
@@ -52,7 +54,7 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		z-index: 1000;
+		z-index: 9999;
 	}
 
 	.modal-content {

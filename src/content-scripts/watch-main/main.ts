@@ -13,11 +13,7 @@ function mountVideoMetrics() {
 		}
 
 		// Check if already initialized
-		if (el_player.hasAttribute('data-video-metrics')) {
-			return;
-		} else {
-			el_player.setAttribute('data-video-metrics', 'true');
-		}
+		if (el_player?.querySelector('.rating-root')) return;
 
 		// Extract video information
 		const el_videoTitle = el_metadata.querySelector('h1.ytd-watch-metadata');

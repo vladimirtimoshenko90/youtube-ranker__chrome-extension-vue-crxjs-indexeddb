@@ -6,11 +6,7 @@ import { createApp } from 'vue';
 function mountVideoMetrics() {
 	document.querySelectorAll('yt-lockup-view-model').forEach((el_video) => {
 		// Check if already initialized
-		if (el_video.hasAttribute('data-video-metrics')) {
-			return;
-		} else {
-			el_video.setAttribute('data-video-metrics', 'true');
-		}
+		if (el_video?.querySelector('.rating-root')) return;
 
 		// Extract video information
 		const el_videoLink = el_video.querySelector('a.yt-lockup-metadata-view-model__title');

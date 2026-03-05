@@ -2,7 +2,15 @@
 	import type { VideoReview } from '@/infrastructure/storage';
 	import Rating from '@/infrastructure/components/Rating.vue';
 
-	defineProps<{ review: VideoReview }>();
+	const props = defineProps<{ review: VideoReview }>();
+	const emit = defineEmits<{ delete: [] }>();
+
+	function onDelete() {
+		const title = props.review.videoTitle || props.review.videoUrl;
+		if (confirm(`Remove review for "${title}"?\nThis cannot be undone.`)) {
+			emit('delete');
+		}
+	}
 
 	function formatDate(timestamp: number): string {
 		return new Date(timestamp).toLocaleString(undefined, {
@@ -30,10 +38,57 @@
 				{{ formatDate(review.lastUpdated) }}
 			</div>
 		</td>
+		<td class="action-cell">
+			<button class="delete-btn" title="Remove this review" @click="onDelete">
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					width="14"
+					height="14"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="2"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+				>
+					<polyline points="3 6 5 6 21 6" />
+					<path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+					<path d="M10 11v6" />
+					<path d="M14 11v6" />
+					<path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+				</svg>
+			</button>
+		</td>
 	</tr>
 </template>
 
 <style scoped lang="scss">
+	.action-cell {
+		width: 32px;
+		text-align: center;
+		padding: 0 4px;
+	}
+
+	.delete-btn {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: transparent;
+		border: none;
+		color: #bbb;
+		padding: 4px;
+		border-radius: 4px;
+		cursor: pointer;
+		transition:
+			color 0.15s,
+			background 0.15s;
+
+		&:hover {
+			color: #e53e3e;
+			background: #fff0f0;
+		}
+	}
+
 	.video-link {
 		color: #1a73e8;
 		text-decoration: none;

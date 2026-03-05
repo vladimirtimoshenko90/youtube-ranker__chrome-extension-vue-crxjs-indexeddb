@@ -6,8 +6,19 @@
 	import { ref, computed } from 'vue';
 
 	const props = defineProps<{ author: AuthorReview }>();
+	const emit = defineEmits<{
+		'delete-author': [authorUrl: string];
+		'delete-review': [authorUrl: string, videoUrl: string];
+	}>();
 
 	const expanded = ref(false);
+
+	function onDeleteAuthor() {
+		const count = props.author.reviews.length;
+		if (confirm(`Remove "${props.author.authorName}" and all ${count} review(s)?\nThis cannot be undone.`)) {
+			emit('delete-author', props.author.authorUrl);
+		}
+	}
 
 	const avg = computed(() => {
 		const rated = props.author.reviews.filter((r) => !r.skipped && !!r.rating);
@@ -27,10 +38,32 @@
 				{{ author.reviews.length }} video{{ author.reviews.length !== 1 ? 's' : '' }}
 				<Rating v-if="avg !== null" :modelValue="avg!" :readonly="true" :starSize="16" />
 			</span>
+			<button class="delete-author-btn" title="Remove author and all reviews" @click.stop="onDeleteAuthor">
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					width="15"
+					height="15"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="2"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+				>
+					<polyline points="3 6 5 6 21 6" />
+					<path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+					<path d="M10 11v6" />
+					<path d="M14 11v6" />
+					<path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+				</svg>
+			</button>
 		</div>
 
 		<div v-if="expanded" class="reviews-table">
-			<VideoReviewsTable :reviews="author.reviews" />
+			<VideoReviewsTable
+				:reviews="author.reviews"
+				@delete-review="(videoUrl) => emit('delete-review', author.authorUrl, videoUrl)"
+			/>
 		</div>
 	</div>
 </template>
@@ -72,6 +105,26 @@
 				font-size: 0.85rem;
 				color: #666;
 				white-space: nowrap;
+			}
+
+			.delete-author-btn {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				background: transparent;
+				border: none;
+				color: #ccc;
+				padding: 4px;
+				border-radius: 4px;
+				cursor: pointer;
+				transition:
+					color 0.15s,
+					background 0.15s;
+
+				&:hover {
+					color: #e53e3e;
+					background: #fff0f0;
+				}
 			}
 		}
 

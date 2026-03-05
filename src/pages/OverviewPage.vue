@@ -21,6 +21,27 @@
 		});
 		loading.value = false;
 	});
+
+	async function onDeleteAuthor(authorUrl: string) {
+		await chrome.runtime.sendMessage({
+			action: STORAGE_MESSAGE_ACTIONS.DELETE_AUTHOR,
+			params: { authorUrl }
+		});
+		authors.value = authors.value.filter((a) => a.authorUrl !== authorUrl);
+	}
+
+	async function onDeleteReview(authorUrl: string, videoUrl: string) {
+		await chrome.runtime.sendMessage({
+			action: STORAGE_MESSAGE_ACTIONS.DELETE_VIDEO_REVIEW,
+			params: { authorUrl, videoUrl }
+		});
+		const author = authors.value.find((a) => a.authorUrl === authorUrl);
+		if (!author) return;
+		author.reviews = author.reviews.filter((r) => r.videoUrl !== videoUrl);
+		if (author.reviews.length === 0) {
+			authors.value = authors.value.filter((a) => a.authorUrl !== authorUrl);
+		}
+	}
 </script>
 
 <template>
@@ -32,7 +53,13 @@
 		<p v-else-if="!sortedAuthors.length" class="status">No reviews yet.</p>
 
 		<div v-else class="author-list">
-			<AuthorCard v-for="author in sortedAuthors" :key="author.authorUrl" :author="author" />
+			<AuthorCard
+				v-for="author in sortedAuthors"
+				:key="author.authorUrl"
+				:author="author"
+				@delete-author="onDeleteAuthor"
+				@delete-review="onDeleteReview"
+			/>
 		</div>
 	</div>
 </template>

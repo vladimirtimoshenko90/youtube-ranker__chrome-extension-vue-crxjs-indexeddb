@@ -3,6 +3,7 @@
 	import VideoReviewRow from './VideoReviewRow.vue';
 
 	defineProps<{ reviews: VideoReview[] }>();
+	const emit = defineEmits<{ 'delete-review': [videoUrl: string] }>();
 </script>
 
 <template>
@@ -11,10 +12,16 @@
 			<tr>
 				<th>Video</th>
 				<th>Review</th>
+				<th class="action-col"></th>
 			</tr>
 		</thead>
 		<tbody>
-			<VideoReviewRow v-for="review in reviews" :key="review.videoUrl" :review="review" />
+			<VideoReviewRow
+				v-for="review in reviews"
+				:key="review.videoUrl"
+				:review="review"
+				@delete="emit('delete-review', review.videoUrl)"
+			/>
 		</tbody>
 	</table>
 </template>
@@ -44,5 +51,9 @@
 
 	tr:last-child td {
 		border-bottom: none;
+	}
+
+	.action-col {
+		width: 32px;
 	}
 </style>

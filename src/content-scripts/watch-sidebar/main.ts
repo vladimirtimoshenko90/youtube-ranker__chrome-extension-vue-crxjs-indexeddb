@@ -39,19 +39,4 @@ function mountVideoMetrics() {
 	});
 }
 
-// Wait for DOM to be ready and mount
-if (document.readyState === 'loading') {
-	document.addEventListener('DOMContentLoaded', mountVideoMetrics);
-} else {
-	mountVideoMetrics();
-}
-
-// Optionally re-run when new lockups are added dynamically
-const observer = new MutationObserver(() => {
-	mountVideoMetrics();
-});
-
-observer.observe(document.body, {
-	childList: true,
-	subtree: true
-});
+setInterval(mountVideoMetrics, 1000);

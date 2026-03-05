@@ -1,6 +1,7 @@
 <script setup lang="ts">
 	import type { AuthorReview } from '@/infrastructure/storage';
 	import Rating from '@/infrastructure/components/Rating.vue';
+	import ExpandToggle from '@/infrastructure/components/ExpandToggle.vue';
 	import VideoReviewRow from './VideoReviewRow.vue';
 	import { ref, computed } from 'vue';
 
@@ -17,7 +18,8 @@
 
 <template>
 	<div class="author-card">
-		<div class="author-header" :aria-expanded="expanded" @click="expanded = !expanded">
+		<div class="author-header" @click="expanded = !expanded">
+			<ExpandToggle :expanded="expanded" />
 			<a class="author-name" :href="author.authorUrl" target="_blank" @click.stop>
 				{{ author.authorName }}
 			</a>
@@ -59,16 +61,6 @@
 			background: #f8f8f8;
 			user-select: none;
 
-			&::before {
-				content: '▶';
-				font-size: 0.75rem;
-				width: 16px;
-				text-align: center;
-				flex-shrink: 0;
-			}
-			&[aria-expanded='true']::before {
-				content: '▼';
-			}
 			&:hover {
 				background: #f0f0f0;
 			}

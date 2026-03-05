@@ -133,7 +133,6 @@ export class AuthorReviewsStorage {
 			author = {
 				authorUrl,
 				authorName,
-				lastUpdated: Date.now(),
 				reviews: [{ ...videoReview }]
 			};
 		} else {
@@ -146,7 +145,6 @@ export class AuthorReviewsStorage {
 				// Add new video review
 				author.reviews.push(videoReview);
 			}
-			author.lastUpdated = Date.now();
 		}
 
 		await this.upsertAuthorReview(author);
@@ -164,7 +162,6 @@ export class AuthorReviewsStorage {
 
 		// Remove the video review
 		author.reviews = author.reviews.filter((v) => v.videoUrl !== videoUrl);
-		author.lastUpdated = Date.now();
 
 		// If no reviews left, delete the author entirely
 		if (author.reviews.length === 0) {

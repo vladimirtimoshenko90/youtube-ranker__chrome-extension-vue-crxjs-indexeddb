@@ -53,6 +53,14 @@ export class AuthorReviewsDbManager {
 						store.createIndex(index.name, index.keyPath, index.options);
 					}
 				}
+
+				// Remove indexes that are no longer in config
+				const configIndexNames = AUTHOR_REVIEWS_DB_CONFIG.stores.authorReviews.indexes.map((i) => i.name);
+				for (const existingIndex of Array.from(store.indexNames)) {
+					if (!configIndexNames.includes(existingIndex)) {
+						store.deleteIndex(existingIndex);
+					}
+				}
 			};
 		});
 

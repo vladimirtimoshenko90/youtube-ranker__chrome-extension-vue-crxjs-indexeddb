@@ -7,6 +7,5 @@ import type { VideoReview } from './VideoReview';
 export interface AuthorReview {
 	authorUrl: string; // Primary key
 	authorName: string;
-	lastUpdated: number; // Timestamp
 	reviews: VideoReview[];
 }

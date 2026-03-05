@@ -9,7 +9,13 @@
 	const expandedAuthors = ref<Set<string>>(new Set());
 	const loading = ref(true);
 
-	const sortedAuthors = computed(() => [...authors.value].sort((a, b) => b.lastUpdated - a.lastUpdated));
+	const sortedAuthors = computed(() =>
+		[...authors.value].sort((a, b) => {
+			const aMax = Math.max(...a.reviews.map((r) => r.lastUpdated ?? 0));
+			const bMax = Math.max(...b.reviews.map((r) => r.lastUpdated ?? 0));
+			return bMax - aMax;
+		})
+	);
 
 	function toggleAuthor(authorUrl: string) {
 		if (expandedAuthors.value.has(authorUrl)) {

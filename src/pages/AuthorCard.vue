@@ -2,6 +2,7 @@
 	import type { AuthorReview } from '@/infrastructure/storage';
 	import Rating from '@/infrastructure/components/Rating.vue';
 	import ExpandToggle from '@/infrastructure/components/ExpandToggle.vue';
+	import { Trash2 } from 'lucide-vue-next';
 	import VideoReviewsTable from './VideoReviewsTable.vue';
 	import { ref, computed } from 'vue';
 
@@ -39,23 +40,7 @@
 				<Rating v-if="avg !== null" :modelValue="avg!" :readonly="true" :starSize="16" />
 			</span>
 			<button class="delete-author-btn" title="Remove author and all reviews" @click.stop="onDeleteAuthor">
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					width="15"
-					height="15"
-					viewBox="0 0 24 24"
-					fill="none"
-					stroke="currentColor"
-					stroke-width="2"
-					stroke-linecap="round"
-					stroke-linejoin="round"
-				>
-					<polyline points="3 6 5 6 21 6" />
-					<path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
-					<path d="M10 11v6" />
-					<path d="M14 11v6" />
-					<path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
-				</svg>
+				<Trash2 :size="15" />
 			</button>
 		</div>
 

@@ -69,5 +69,7 @@
 </script>
 
 <template>
-	<VideoRatings :videoRating="videoRating" :authorRating="authorRating" @updateRating="handleUpdateRating" />
+	<div @click.stop.prevent="function () {}">
+		<VideoRatings :videoRating="videoRating" :authorRating="authorRating" @updateRating="handleUpdateRating" />
+	</div>
 </template>

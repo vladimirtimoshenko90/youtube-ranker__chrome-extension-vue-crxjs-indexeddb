@@ -40,7 +40,7 @@
 			</div>
 		</td>
 		<td class="action-cell">
-			<button class="delete-btn" title="Remove this review" @click="onDelete">
+			<button class="delete-btn" @click="onDelete">
 				<Trash2 :size="14" />
 			</button>
 		</td>
@@ -52,26 +52,6 @@
 		width: 32px;
 		text-align: center;
 		padding: 0 4px;
-	}
-
-	.delete-btn {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		background: transparent;
-		border: none;
-		color: #bbb;
-		padding: 4px;
-		border-radius: 4px;
-		cursor: pointer;
-		transition:
-			color 0.15s,
-			background 0.15s;
-
-		&:hover {
-			color: #e53e3e;
-			background: #fff0f0;
-		}
 	}
 
 	.video-link {

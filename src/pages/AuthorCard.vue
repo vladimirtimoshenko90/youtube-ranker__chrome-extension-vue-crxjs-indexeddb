@@ -39,7 +39,7 @@
 				{{ author.reviews.length }} video{{ author.reviews.length !== 1 ? 's' : '' }}
 				<Rating v-if="avg !== null" :modelValue="avg!" :readonly="true" :starSize="16" />
 			</span>
-			<button class="delete-author-btn" title="Remove author and all reviews" @click.stop="onDeleteAuthor">
+			<button class="delete-btn" @click.stop="onDeleteAuthor">
 				<Trash2 :size="15" />
 			</button>
 		</div>
@@ -90,26 +90,6 @@
 				font-size: 0.85rem;
 				color: #666;
 				white-space: nowrap;
-			}
-
-			.delete-author-btn {
-				display: flex;
-				align-items: center;
-				justify-content: center;
-				background: transparent;
-				border: none;
-				color: #ccc;
-				padding: 4px;
-				border-radius: 4px;
-				cursor: pointer;
-				transition:
-					color 0.15s,
-					background 0.15s;
-
-				&:hover {
-					color: #e53e3e;
-					background: #fff0f0;
-				}
 			}
 		}
 

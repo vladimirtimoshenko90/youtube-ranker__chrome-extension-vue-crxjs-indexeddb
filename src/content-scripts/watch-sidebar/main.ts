@@ -9,11 +9,12 @@ function mountVideoMetrics() {
 		if (el_video?.querySelector('.rating-root')) return;
 
 		// Extract video information
+		const el_player = el_video.querySelector('yt-thumbnail-view-model');
 		const el_videoLink = el_video.querySelector('a.yt-lockup-metadata-view-model__title');
 		const el_authorName = el_video.querySelector(
 			'.yt-lockup-metadata-view-model__metadata .yt-content-metadata-view-model__metadata-row'
 		);
-		if (!el_videoLink || !el_authorName) {
+		if (!el_player || !el_videoLink || !el_authorName) {
 			return;
 		}
 
@@ -25,7 +26,7 @@ function mountVideoMetrics() {
 		// Create container, mount VideoRatingInject
 		const el_root = document.createElement('div');
 		el_root.className = 'rating-root rating-root__watch-sidebar';
-		el_video.appendChild(el_root);
+		el_player.appendChild(el_root);
 
 		const app = createApp(VideoRatingInject, {
 			videoUrl,

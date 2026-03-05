@@ -5,6 +5,7 @@ import { broadcastAuthorReview } from '../broadcast-events/broadcastAuthorReview
 
 // Storage message action constants
 export const STORAGE_MESSAGE_ACTIONS = {
+	LIST_AUTHORS: 'listAuthors',
 	GET_AUTHOR_BY_URL: 'getAuthor',
 	GET_AUTHOR_BY_NAME: 'getAuthorByName',
 	DELETE_AUTHOR: 'deleteAuthor',
@@ -35,6 +36,11 @@ function handleStorageMessage(
 
 		switch (action) {
 			// Author operations
+			case STORAGE_MESSAGE_ACTIONS.LIST_AUTHORS: {
+				result = await authorReviewsStorage.getAllAuthors();
+				break;
+			}
+
 			case STORAGE_MESSAGE_ACTIONS.GET_AUTHOR_BY_URL: {
 				result = await authorReviewsCache.getOrAdd(params.authorUrl, () =>
 					authorReviewsStorage.getAuthor(params.authorUrl)

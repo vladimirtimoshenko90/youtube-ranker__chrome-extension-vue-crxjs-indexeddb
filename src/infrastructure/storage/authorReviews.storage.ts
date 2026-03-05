@@ -9,6 +9,26 @@ export class AuthorReviewsStorage {
 	private storeName = 'authorReviews';
 
 	/**
+	 * Get all author reviews
+	 */
+	async getAllAuthors(): Promise<AuthorReview[]> {
+		const db = await dbManager.getDB();
+		return new Promise((resolve, reject) => {
+			const transaction = db.transaction([this.storeName], 'readonly');
+			const store = transaction.objectStore(this.storeName);
+			const request = store.getAll();
+
+			request.onerror = () => {
+				reject(new Error(`Failed to get all authors: ${request.error}`));
+			};
+
+			request.onsuccess = () => {
+				resolve(request.result || []);
+			};
+		});
+	}
+
+	/**
 	 * Get an author review by URL
 	 */
 	async getAuthor(authorUrl: string): Promise<AuthorReview | null> {

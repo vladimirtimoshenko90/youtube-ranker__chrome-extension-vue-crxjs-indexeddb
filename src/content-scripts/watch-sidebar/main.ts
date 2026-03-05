@@ -3,21 +3,23 @@ import '../rating-positions.css';
 import VideoRatingInject from '../VideoRatingsInject.vue';
 import { createApp } from 'vue';
 
-function mountVideoMetrics() {
+function handleWatchSidebar() {
 	document.querySelectorAll('yt-lockup-view-model').forEach((el_video) => {
 		// Check if already initialized
 		if (el_video?.querySelector('.rating-root')) return;
 
-		// Extract video information
-		const el_player = el_video.querySelector('yt-thumbnail-view-model');
+		// Identify injection point and required elements
+		const el_injectInto = el_video.querySelector('yt-thumbnail-view-model');
+
 		const el_videoLink = el_video.querySelector('a.yt-lockup-metadata-view-model__title');
 		const el_authorName = el_video.querySelector(
 			'.yt-lockup-metadata-view-model__metadata .yt-content-metadata-view-model__metadata-row'
 		);
-		if (!el_player || !el_videoLink || !el_authorName) {
+		if (!el_injectInto || !el_videoLink || !el_authorName) {
 			return;
 		}
 
+		// Extract video information
 		const videoUrl = `https://www.youtube.com${el_videoLink.getAttribute('href')}`;
 		const videoTitle = el_videoLink.getAttribute('title') || el_videoLink.textContent;
 		const authorUrl = null; // Author URL is absent in sidebar
@@ -26,7 +28,7 @@ function mountVideoMetrics() {
 		// Create container, mount VideoRatingInject
 		const el_root = document.createElement('div');
 		el_root.className = 'rating-root rating-root__watch-sidebar';
-		el_player.appendChild(el_root);
+		el_injectInto.appendChild(el_root);
 
 		const app = createApp(VideoRatingInject, {
 			videoUrl,
@@ -39,4 +41,4 @@ function mountVideoMetrics() {
 	});
 }
 
-setInterval(mountVideoMetrics, 1000);
+setInterval(handleWatchSidebar, 1000);

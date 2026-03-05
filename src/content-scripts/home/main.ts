@@ -3,18 +3,21 @@ import '../rating-positions.css';
 import VideoRatingInject from '../VideoRatingsInject.vue';
 import { createApp } from 'vue';
 
-function mountVideoMetrics() {
+function handleHomeVideos() {
 	document.querySelectorAll('yt-lockup-view-model').forEach((el_video) => {
 		// Check if already initialized
 		if (el_video?.querySelector('.rating-root')) return;
 
-		// Extract video information
+		// Identify injection point and required elements
+		const el_injectInto = el_video;
+
 		const el_videoLink = el_video.querySelector('a.yt-lockup-metadata-view-model__title');
 		const el_authorLink = el_video.querySelector('a.yt-core-attributed-string__link');
 		if (!el_videoLink || !el_authorLink) {
 			return;
 		}
 
+		// Extract video information
 		const videoUrl = `https://www.youtube.com${el_videoLink.getAttribute('href')}`;
 		const videoTitle = el_videoLink.getAttribute('title') || el_videoLink.textContent;
 		const authorUrl = `https://www.youtube.com${el_authorLink.getAttribute('href')}`;
@@ -23,7 +26,7 @@ function mountVideoMetrics() {
 		// Create container, mount VideoRatingInject
 		const el_root = document.createElement('div');
 		el_root.className = 'rating-root rating-root__home';
-		el_video.appendChild(el_root);
+		el_injectInto.appendChild(el_root);
 
 		const app = createApp(VideoRatingInject, {
 			videoUrl,
@@ -36,4 +39,4 @@ function mountVideoMetrics() {
 	});
 }
 
-setInterval(mountVideoMetrics, 1000);
+setInterval(handleHomeVideos, 1000);

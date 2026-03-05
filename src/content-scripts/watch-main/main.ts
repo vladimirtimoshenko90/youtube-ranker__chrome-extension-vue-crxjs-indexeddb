@@ -3,25 +3,24 @@ import '../rating-positions.css';
 import VideoRatingInject from '../VideoRatingsInject.vue';
 import { createApp } from 'vue';
 
-function mountVideoMetrics() {
+function handleWatchMain() {
 	if (window.location.pathname === '/watch') {
 		const el_primaryInner = document.querySelector('#primary-inner');
-		const el_player = el_primaryInner?.querySelector('ytd-player');
-		const el_metadata = el_primaryInner?.querySelector('ytd-watch-metadata');
-		if (!el_player || !el_metadata) {
-			return;
-		}
+		if (!el_primaryInner) return;
 
 		// Check if already initialized
-		if (el_player?.querySelector('.rating-root')) return;
+		if (el_primaryInner.querySelector('.rating-root')) return;
 
-		// Extract video information
-		const el_videoTitle = el_metadata.querySelector('h1.ytd-watch-metadata');
-		const el_authorLink = el_metadata.querySelector('ytd-watch-metadata .ytd-channel-name a.yt-simple-endpoint');
-		if (!el_videoTitle || !el_authorLink) {
+		// Identify injection point and required elements
+		const el_injectInto = el_primaryInner.querySelector('ytd-player');
+
+		const el_videoTitle = el_primaryInner.querySelector('ytd-watch-metadata h1.ytd-watch-metadata');
+		const el_authorLink = el_primaryInner.querySelector('.ytd-channel-name a.yt-simple-endpoint');
+		if (!el_injectInto || !el_videoTitle || !el_authorLink) {
 			return;
 		}
 
+		// Extract video information
 		const videoUrl = window.location.href;
 		const videoTitle = el_videoTitle.textContent;
 		const authorUrl = `https://www.youtube.com${el_authorLink.getAttribute('href')}`;
@@ -30,7 +29,7 @@ function mountVideoMetrics() {
 		// Create container, mount VideoRatingInject
 		const el_root = document.createElement('div');
 		el_root.className = 'rating-root rating-root__watch-main';
-		el_player.appendChild(el_root);
+		el_injectInto.appendChild(el_root);
 
 		const app = createApp(VideoRatingInject, {
 			videoUrl,
@@ -43,4 +42,4 @@ function mountVideoMetrics() {
 	}
 }
 
-setInterval(mountVideoMetrics, 1000);
+setInterval(handleWatchMain, 1000);

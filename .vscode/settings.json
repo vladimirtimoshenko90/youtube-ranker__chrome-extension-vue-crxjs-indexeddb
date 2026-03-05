@@ -34,5 +34,7 @@
 	},
 	"[json]": {
 		"editor.defaultFormatter": "esbenp.prettier-vscode"
-	}
+	},
+
+	"github.copilot.chat.codeGeneration.useInstructionFiles": true
 }

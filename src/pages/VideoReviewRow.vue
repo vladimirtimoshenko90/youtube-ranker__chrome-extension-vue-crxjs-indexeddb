@@ -2,6 +2,7 @@
 	import type { VideoReview } from '@/infrastructure/storage';
 	import Rating from '@/infrastructure/components/Rating.vue';
 	import { Trash2 } from 'lucide-vue-next';
+	import { formatDate } from '@/infrastructure/utils/dateUtils';
 
 	const props = defineProps<{ review: VideoReview }>();
 	const emit = defineEmits<{ delete: [] }>();
@@ -11,16 +12,6 @@
 		if (confirm(`Remove review for "${title}"?\nThis cannot be undone.`)) {
 			emit('delete');
 		}
-	}
-
-	function formatDate(timestamp: number): string {
-		return new Date(timestamp).toLocaleString(undefined, {
-			year: 'numeric',
-			month: 'short',
-			day: 'numeric',
-			hour: '2-digit',
-			minute: '2-digit'
-		});
 	}
 </script>
 

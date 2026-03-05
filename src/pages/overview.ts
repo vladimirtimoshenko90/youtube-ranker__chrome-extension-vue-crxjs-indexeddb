@@ -1,4 +1,4 @@
-import Overview from './Overview.vue';
+import OverviewPage from './OverviewPage.vue';
 import { createApp } from 'vue';
 
-createApp(Overview).mount('#app');
+createApp(OverviewPage).mount('#app');

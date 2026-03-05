@@ -124,6 +124,8 @@ export class AuthorReviewsStorage {
 	 * If author exists, adds or updates the video review
 	 */
 	async upsertVideoReview(authorUrl: string, authorName: string, videoReview: VideoReview): Promise<void> {
+		videoReview.lastUpdated = Date.now();
+
 		let author = await this.getAuthor(authorUrl);
 
 		if (!author) {
@@ -132,18 +134,14 @@ export class AuthorReviewsStorage {
 				authorUrl,
 				authorName,
 				lastUpdated: Date.now(),
-				reviews: [videoReview]
+				reviews: [{ ...videoReview }]
 			};
 		} else {
 			// Update existing author - add or update video review
 			const videoIndex = author.reviews.findIndex((v) => v.videoUrl === videoReview.videoUrl);
 			if (videoIndex >= 0) {
 				// Update existing video review
-				author.reviews[videoIndex] = {
-					...author.reviews[videoIndex],
-					...videoReview,
-					lastUpdated: Date.now()
-				};
+				author.reviews[videoIndex] = { ...videoReview };
 			} else {
 				// Add new video review
 				author.reviews.push(videoReview);

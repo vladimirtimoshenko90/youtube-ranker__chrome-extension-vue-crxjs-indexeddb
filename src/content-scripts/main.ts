@@ -1,6 +1,5 @@
-import './rating-positions.css';
+import VideoRatingsInject, { RatingsInjectContext } from './VideoRatingsInject.vue';
 
-import VideoRatingsInject from './VideoRatingsInject.vue';
 import { createApp } from 'vue';
 
 function handleHomeVideos() {
@@ -116,7 +115,7 @@ setInterval(() => {
 
 function injectRatings(
 	el_injectInto: Element,
-	type: 'home' | 'search' | 'watch-main' | 'watch-sidebar' | 'channel',
+	context: RatingsInjectContext,
 	videoInfo: {
 		videoUrl: string;
 		videoTitle: string;
@@ -125,10 +124,9 @@ function injectRatings(
 	}
 ): void {
 	const el_root = document.createElement('div');
-	el_root.className = `rating-root rating-root__${type}`;
 	el_injectInto.appendChild(el_root);
 
-	const app = createApp(VideoRatingsInject, { ...videoInfo });
+	const app = createApp(VideoRatingsInject, { ...videoInfo, context });
 
 	app.mount(el_root);
 }

@@ -5,14 +5,15 @@
 	import { STORAGE_MESSAGE_ACTIONS } from '@/service-worker/storage-messages/registerStorageMessageHandlers';
 	import { ref, onMounted } from 'vue';
 
-	interface Props {
+	export type RatingsInjectContext = 'home' | 'search' | 'watch-main' | 'watch-sidebar' | 'channel';
+
+	const props = defineProps<{
+		context: RatingsInjectContext;
 		videoUrl: string;
 		videoTitle: string;
 		authorUrl: string | null;
 		authorName: string;
-	}
-
-	const props = defineProps<Props>();
+	}>();
 
 	const videoRating = ref<RatingData>();
 	const authorRating = ref<number>();
@@ -69,7 +70,32 @@
 </script>
 
 <template>
-	<div @click.stop.prevent="function () {}">
+	<div :class="`rating-root rating-root__${props.context}`" @click.stop.prevent="() => {}">
 		<VideoRatings :videoRating="videoRating" :authorRating="authorRating" @updateRating="handleUpdateRating" />
 	</div>
 </template>
+
+<style scoped lang="scss">
+	.rating-root {
+		position: absolute;
+		top: 0;
+		z-index: 1100;
+		background: rgba(255, 255, 255, 0.5);
+
+		&.rating-root__home {
+			right: 0;
+		}
+		&.rating-root__search {
+			left: 0;
+		}
+		&.rating-root__watch-main {
+			right: 0;
+		}
+		&.rating-root__watch-sidebar {
+			right: 0;
+		}
+		&.rating-root__channel {
+			left: 0;
+		}
+	}
+</style>

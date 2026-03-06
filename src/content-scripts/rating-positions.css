@@ -20,3 +20,7 @@
 .rating-root.rating-root__watch-sidebar {
 	right: 0;
 }
+
+.rating-root.rating-root__watch-channel {
+	left: 0;
+}

@@ -82,16 +82,41 @@ function handleWatchSidebar() {
 	});
 }
 
+function handleChannelVideos() {
+	if (!window.location.pathname.startsWith('/@')) return;
+	document.querySelectorAll('#scroll-container ytd-grid-video-renderer').forEach((el_video) => {
+		if (el_video?.querySelector('.rating-root')) return;
+
+		const el_injectInto = el_video.querySelector('ytd-thumbnail');
+		const el_videoLink = el_video.querySelector('a#video-title');
+		const el_authorName = document.querySelector(
+			'.yt-page-header-view-model__page-header-headline-info .dynamicTextViewModelH1'
+		);
+		const el_authorId = document.querySelector(
+			'.yt-page-header-view-model__page-header-headline-info .yt-content-metadata-view-model__metadata-text'
+		);
+		if (!el_injectInto || !el_videoLink || !el_authorName || !el_authorId) return;
+
+		injectRatings(el_injectInto, 'channel', {
+			videoUrl: `https://www.youtube.com${el_videoLink.getAttribute('href')}`,
+			videoTitle: el_videoLink.textContent,
+			authorUrl: `https://www.youtube.com/${el_authorId.textContent}`,
+			authorName: el_authorName.textContent
+		});
+	});
+}
+
 setInterval(() => {
 	handleHomeVideos();
 	handleSearchVideos();
 	handleWatchMain();
 	handleWatchSidebar();
+	handleChannelVideos();
 }, 1000);
 
 function injectRatings(
 	el_injectInto: Element,
-	type: 'home' | 'search' | 'watch-main' | 'watch-sidebar',
+	type: 'home' | 'search' | 'watch-main' | 'watch-sidebar' | 'channel',
 	videoInfo: {
 		videoUrl: string;
 		videoTitle: string;

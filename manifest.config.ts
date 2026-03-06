@@ -17,20 +17,8 @@ export default defineManifest({
 	},
 	content_scripts: [
 		{
-			js: ['src/content-scripts/home/main.ts'],
-			matches: ['https://www.youtube.com/']
-		},
-		{
-			js: ['src/content-scripts/search/main.ts'],
-			matches: ['https://www.youtube.com/results*']
-		},
-		{
-			js: ['src/content-scripts/watch-main/main.ts'],
-			matches: ['https://www.youtube.com/watch*']
-		},
-		{
-			js: ['src/content-scripts/watch-sidebar/main.ts'],
-			matches: ['https://www.youtube.com/watch*']
+			js: ['src/content-scripts/main.ts'],
+			matches: ['https://www.youtube.com/*']
 		}
 	],
 	background: {

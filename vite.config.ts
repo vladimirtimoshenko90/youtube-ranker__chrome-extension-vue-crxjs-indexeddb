@@ -17,7 +17,8 @@ export default defineConfig({
 	build: {
 		rollupOptions: {
 			input: {
-				overview: 'src/pages/overview.html'
+				overview: 'src/pages/overview/overview.html',
+				'author-overview': 'src/pages/author-overview/author-overview.html'
 			}
 		}
 	},

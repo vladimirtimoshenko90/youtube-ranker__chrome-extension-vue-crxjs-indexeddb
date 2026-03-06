@@ -1,7 +1,4 @@
-import '../rating-positions.css';
-
-import VideoRatingInject from '../VideoRatingsInject.vue';
-import { createApp } from 'vue';
+import { injectRatings } from '../utils';
 
 function handleHomeVideos() {
 	document.querySelectorAll('yt-lockup-view-model').forEach((el_video) => {
@@ -17,25 +14,13 @@ function handleHomeVideos() {
 			return;
 		}
 
-		// Extract video information
-		const videoUrl = `https://www.youtube.com${el_videoLink.getAttribute('href')}`;
-		const videoTitle = el_videoLink.getAttribute('title') || el_videoLink.textContent;
-		const authorUrl = `https://www.youtube.com${el_authorLink.getAttribute('href')}`;
-		const authorName = el_authorLink.textContent;
-
-		// Create container, mount VideoRatingInject
-		const el_root = document.createElement('div');
-		el_root.className = 'rating-root rating-root__home';
-		el_injectInto.appendChild(el_root);
-
-		const app = createApp(VideoRatingInject, {
-			videoUrl,
-			videoTitle,
-			authorUrl,
-			authorName
+		// Inject ratings
+		injectRatings(el_injectInto, 'home', {
+			videoUrl: `https://www.youtube.com${el_videoLink.getAttribute('href')}`,
+			videoTitle: el_videoLink.textContent,
+			authorUrl: `https://www.youtube.com${el_authorLink.getAttribute('href')}`,
+			authorName: el_authorLink.textContent
 		});
-
-		app.mount(el_root);
 	});
 }
 

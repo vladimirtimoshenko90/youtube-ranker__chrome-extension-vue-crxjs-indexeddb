@@ -1,13 +1,8 @@
-import '../rating-positions.css';
-
-import VideoRatingInject from '../VideoRatingsInject.vue';
-import { createApp } from 'vue';
+import { injectRatings } from '../utils';
 
 function handleWatchMain() {
-	if (window.location.pathname === '/watch') {
-		const el_primaryInner = document.querySelector('#primary-inner');
-		if (!el_primaryInner) return;
-
+	const el_primaryInner = document.querySelector('#primary-inner');
+	if (!!el_primaryInner && window.location.pathname === '/watch') {
 		// Check if already initialized
 		if (el_primaryInner.querySelector('.rating-root')) return;
 
@@ -20,25 +15,13 @@ function handleWatchMain() {
 			return;
 		}
 
-		// Extract video information
-		const videoUrl = window.location.href;
-		const videoTitle = el_videoTitle.textContent;
-		const authorUrl = `https://www.youtube.com${el_authorLink.getAttribute('href')}`;
-		const authorName = el_authorLink.textContent;
-
-		// Create container, mount VideoRatingInject
-		const el_root = document.createElement('div');
-		el_root.className = 'rating-root rating-root__watch-main';
-		el_injectInto.appendChild(el_root);
-
-		const app = createApp(VideoRatingInject, {
-			videoUrl,
-			videoTitle,
-			authorUrl,
-			authorName
+		// Inject ratings
+		injectRatings(el_injectInto, 'watch-main', {
+			videoUrl: window.location.href,
+			videoTitle: el_videoTitle.textContent,
+			authorUrl: `https://www.youtube.com${el_authorLink.getAttribute('href')}`,
+			authorName: el_authorLink.textContent
 		});
-
-		app.mount(el_root);
 	}
 }
 

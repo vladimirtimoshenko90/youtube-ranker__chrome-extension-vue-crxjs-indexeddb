@@ -1,8 +1,8 @@
 <script setup lang="ts">
 	import type { AuthorReview } from '@/infrastructure/storage';
-	import AuthorCard from './AuthorCard.vue';
 	import { STORAGE_MESSAGE_ACTIONS } from '@/service-worker/storage-messages/registerStorageMessageHandlers';
 	import { ref, computed, onMounted } from 'vue';
+	import AuthorCard from '../__shared/AuthorCard.vue';
 
 	const authors = ref<AuthorReview[]>([]);
 	const loading = ref(true);

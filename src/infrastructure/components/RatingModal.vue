@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { ref, computed } from 'vue';
+	import { ref, computed, watch } from 'vue';
 	import Modal from './Modal.vue';
 	import Rating from './Rating.vue';
 	import type { RatingData } from '../common/rating-data';
@@ -41,6 +41,14 @@
 	const handleClose = () => {
 		emit('close');
 	};
+
+	watch(
+		() => props.data,
+		(data) => {
+			formData.value = { ...data };
+		},
+		{ deep: true }
+	);
 </script>
 
 <template>

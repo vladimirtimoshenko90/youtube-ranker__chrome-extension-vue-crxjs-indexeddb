@@ -31,25 +31,28 @@
 <template>
 	<div class="author-card">
 		<div
-			class="author-header"
-			:class="{ 'author-header--static': alwaysExpanded }"
+			class="author-card__header"
+			:class="{ 'author-card__header--static': alwaysExpanded }"
 			@click="!alwaysExpanded && (expanded = !expanded)"
 		>
 			<ExpandToggle v-if="!alwaysExpanded" :expanded="expanded" />
 
-			<a class="author-name" :href="author.authorUrl" target="_blank" @click.stop>
+			<a class="author-card__name" :href="author.authorUrl" target="_blank" @click.stop>
 				{{ author.authorName }}
 			</a>
-			<span class="author-meta">
-				{{ author.reviews.length }} video{{ author.reviews.length !== 1 ? 's' : '' }}
-				<Rating v-if="avg !== null" :modelValue="avg!" :readonly="true" :starSize="16" />
-			</span>
-			<button class="delete-btn" @click.stop="onDeleteAuthor">
-				<Trash2 :size="15" />
-			</button>
+
+			<div class="author-card__details">
+				<span class="author-card__count">
+					{{ author.reviews.length }} video{{ author.reviews.length !== 1 ? 's' : '' }}
+				</span>
+				<Rating v-if="avg !== null" :modelValue="avg!" :readonly="true" :starSize="20" />
+				<button class="delete-btn" @click.stop="onDeleteAuthor">
+					<Trash2 :size="14" />
+				</button>
+			</div>
 		</div>
 
-		<div v-if="alwaysExpanded || expanded" class="reviews-table">
+		<div v-if="alwaysExpanded || expanded" class="author-card__body">
 			<VideoReviewsTable
 				:reviews="author.reviews"
 				@delete-review="(videoUrl) => emit('delete-review', author.authorUrl, videoUrl)"
@@ -60,53 +63,74 @@
 
 <style scoped lang="scss">
 	.author-card {
-		border: 1px solid #e0e0e0;
-		border-radius: 8px;
-		margin-bottom: 12px;
+		background: #fff;
+		border-radius: 12px;
+		border: 1px solid rgba(0, 0, 0, 0.06);
+		box-shadow:
+			0 1px 2px rgba(0, 0, 0, 0.04),
+			0 4px 12px rgba(0, 0, 0, 0.03);
 		overflow: hidden;
+		transition: box-shadow 0.2s ease;
 
-		.author-header {
+		&:hover {
+			box-shadow:
+				0 2px 4px rgba(0, 0, 0, 0.06),
+				0 6px 16px rgba(0, 0, 0, 0.04);
+		}
+
+		&__header {
 			display: flex;
 			align-items: center;
 			gap: 10px;
-			padding: 12px 16px;
+			padding: 16px 24px;
 			cursor: pointer;
-			background: #f8f8f8;
 			user-select: none;
+			transition: background 0.15s;
+
+			&:hover {
+				background: #f8f9fa;
+			}
 
 			&--static {
 				cursor: default;
 				&:hover {
-					background: #f8f8f8;
+					background: transparent;
 				}
-			}
-
-			&:hover {
-				background: #f0f0f0;
-			}
-
-			.author-name {
-				font-weight: 600;
-				color: #1a73e8;
-				text-decoration: none;
-				&:hover {
-					text-decoration: underline;
-				}
-			}
-
-			.author-meta {
-				margin-left: auto;
-				display: flex;
-				align-items: center;
-				gap: 8px;
-				font-size: 0.85rem;
-				color: #666;
-				white-space: nowrap;
 			}
 		}
 
-		.reviews-table {
-			padding: 0 16px 16px;
+		&__name {
+			font-weight: 600;
+			font-size: 0.95rem;
+			color: #2563eb;
+			text-decoration: none;
+			letter-spacing: -0.01em;
+
+			&:hover {
+				color: #1d4ed8;
+				text-decoration: underline;
+			}
+		}
+
+		&__details {
+			margin-left: auto;
+			display: flex;
+			align-items: center;
+			gap: 12px;
+		}
+
+		&__count {
+			font-size: 0.8rem;
+			color: #8b95a5;
+			background: #f0f2f5;
+			padding: 3px 10px;
+			border-radius: 20px;
+			white-space: nowrap;
+			font-weight: 500;
+		}
+
+		&__body {
+			padding: 0 24px;
 		}
 	}
 </style>

@@ -16,74 +16,113 @@
 </script>
 
 <template>
-	<tr>
-		<td>
-			<a :href="review.videoUrl" target="_blank" class="video-link">
+	<div class="review-row">
+		<div class="review-row__video">
+			<a :href="review.videoUrl" target="_blank" class="review-row__link">
 				{{ review.videoTitle || review.videoUrl }}
 			</a>
-		</td>
-		<td class="review-cell">
-			<Rating v-if="review.rating" :modelValue="review.rating" :readonly="true" :starSize="16" />
-			<span v-else-if="review.skipped" class="skipped-label">
-				<XCircle :size="20" class="skipped-label__icon" />
-				not relevant
-			</span>
-			<div v-if="review.comment" class="review-comment">{{ review.comment }}</div>
-			<div v-if="review.lastUpdated" class="review-date">
-				{{ formatDate(review.lastUpdated) }}
+		</div>
+
+		<div class="review-row__info">
+			<div class="review-row__rating">
+				<Rating v-if="review.rating" :modelValue="review.rating" :readonly="true" :starSize="15" />
+				<span v-else-if="review.skipped" class="review-row__skipped">
+					<XCircle :size="13" />
+					not relevant
+				</span>
 			</div>
-		</td>
-		<td class="action-cell">
-			<button class="delete-btn" @click="onDelete">
-				<Trash2 :size="14" />
-			</button>
-		</td>
-	</tr>
+			<p v-if="review.comment" class="review-row__comment">{{ review.comment }}</p>
+			<span v-if="review.lastUpdated" class="review-row__date">
+				{{ formatDate(review.lastUpdated) }}
+			</span>
+		</div>
+
+		<button class="delete-btn" @click="onDelete">
+			<Trash2 :size="14" />
+		</button>
+	</div>
 </template>
 
 <style scoped lang="scss">
-	.action-cell {
-		width: 32px;
-		text-align: center;
-		padding: 0 4px;
-	}
+	.review-row {
+		display: flex;
+		align-items: flex-start;
+		gap: 16px;
+		padding: 14px 0;
+		border-bottom: 1px solid #f0f1f3;
+		transition: background 0.12s;
 
-	.video-link {
-		color: #1a73e8;
-		text-decoration: none;
+		&:last-child {
+			border-bottom: none;
+		}
 
 		&:hover {
-			text-decoration: underline;
+			background: #fafbfc;
+			margin: 0 -8px;
+			padding-left: 8px;
+			padding-right: 8px;
+			border-radius: 8px;
 		}
-	}
 
-	.review-cell {
-		width: 260px;
+		&__video {
+			flex: 1;
+			min-width: 0;
+		}
 
-		.skipped-label {
-			display: inline-flex;
-			align-items: center;
-			gap: 4px;
-			font-style: italic;
-			color: #999;
-			font-size: 0.85rem;
+		&__link {
+			color: #2563eb;
+			text-decoration: none;
+			font-size: 0.86rem;
+			line-height: 1.5;
+			word-break: break-word;
 
-			&__icon {
-				flex-shrink: 0;
-				color: #e53e3e;
+			&:hover {
+				color: #1d4ed8;
+				text-decoration: underline;
 			}
 		}
 
-		.review-comment {
-			margin-top: 4px;
-			color: #444;
-			font-size: 0.85rem;
+		&__info {
+			flex-shrink: 0;
+			width: 180px;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			gap: 4px;
 		}
 
-		.review-date {
-			margin-top: 2px;
-			color: #999;
+		&__rating {
+			display: flex;
+			align-items: center;
+		}
+
+		&__skipped {
+			display: inline-flex;
+			align-items: center;
+			gap: 5px;
+			color: #ef4444;
+			font-size: 0.78rem;
+			font-weight: 500;
+			background: rgba(239, 68, 68, 0.06);
+			padding: 2px 9px;
+			border-radius: 20px;
+		}
+
+		&__comment {
+			margin: 0;
+			color: #4b5563;
 			font-size: 0.8rem;
+			line-height: 1.45;
+		}
+
+		&__date {
+			color: #b0b7c3;
+			font-size: 0.72rem;
+		}
+
+		.delete-btn {
+			flex-shrink: 0;
+			align-self: center;
 		}
 	}
 </style>

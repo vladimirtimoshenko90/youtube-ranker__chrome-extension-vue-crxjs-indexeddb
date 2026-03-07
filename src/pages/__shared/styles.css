@@ -1,3 +1,8 @@
+body {
+	margin: 0;
+	background: #f5f6f8;
+}
+
 .page {
 	font-family:
 		'Segoe UI',
@@ -6,8 +11,9 @@
 		sans-serif;
 	max-width: 960px;
 	margin: 0 auto;
-	padding: 24px;
-	color: #1a1a1a;
+	padding: 32px 28px;
+	color: #1d1d1f;
+	-webkit-font-smoothing: antialiased;
 }
 
 .delete-btn {
@@ -16,16 +22,16 @@
 	justify-content: center;
 	background: transparent;
 	border: none;
-	color: #bbb;
-	padding: 4px;
-	border-radius: 4px;
+	color: #ccc;
+	padding: 6px;
+	border-radius: 6px;
 	cursor: pointer;
 	transition:
-		color 0.15s,
-		background 0.15s;
+		color 0.2s,
+		background 0.2s;
 }
 
 .delete-btn:hover {
-	color: #e53e3e;
-	background: #fff0f0;
+	color: #dc3545;
+	background: rgba(220, 53, 69, 0.08);
 }

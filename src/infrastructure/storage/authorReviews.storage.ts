@@ -124,8 +124,6 @@ export class AuthorReviewsStorage {
 	 * If author exists, adds or updates the video review
 	 */
 	async upsertVideoReview(authorUrl: string, authorName: string, videoReview: VideoReview): Promise<void> {
-		videoReview.lastUpdated = Date.now();
-
 		let author = await this.getAuthor(authorUrl);
 
 		if (!author) {
@@ -143,7 +141,7 @@ export class AuthorReviewsStorage {
 				author.reviews[videoIndex] = { ...videoReview };
 			} else {
 				// Add new video review
-				author.reviews.push(videoReview);
+				author.reviews.push({ ...videoReview });
 			}
 		}
 

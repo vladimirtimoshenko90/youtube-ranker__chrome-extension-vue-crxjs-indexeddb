@@ -19,13 +19,7 @@
 	const authorRating = ref<number>();
 
 	const handleUpdateRating = async (updatedRating: RatingData) => {
-		await swClient.upsertVideoReview(props.authorUrl, props.authorName, {
-			videoUrl: props.videoUrl,
-			videoTitle: props.videoTitle,
-			...updatedRating,
-			rating: updatedRating.rating!,
-			lastUpdated: Date.now()
-		});
+		await swClient.rateVideo(props.authorUrl, props.authorName, props.videoUrl, props.videoTitle, updatedRating);
 	};
 
 	onMounted(async () => {

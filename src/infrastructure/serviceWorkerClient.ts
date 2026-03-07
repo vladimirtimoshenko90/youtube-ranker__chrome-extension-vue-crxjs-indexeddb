@@ -1,5 +1,6 @@
 import type { AuthorReview, VideoReview } from './storage';
 
+import type { RatingData } from './common/rating-data';
 import { STORAGE_MESSAGE_ACTIONS } from '@/service-worker/storage-messages/registerStorageMessageHandlers';
 
 export const serviceWorkerClient = {
@@ -37,10 +38,16 @@ export const serviceWorkerClient = {
 		});
 	},
 
-	upsertVideoReview(authorUrl: string | null, authorName: string, videoReview: VideoReview): Promise<void> {
+	rateVideo(
+		authorUrl: string | null,
+		authorName: string,
+		videoUrl: string,
+		videoTitle: string,
+		ratingData: RatingData
+	): Promise<void> {
 		return chrome.runtime.sendMessage({
-			action: STORAGE_MESSAGE_ACTIONS.UPSERT_VIDEO_REVIEW,
-			params: { authorUrl, authorName, videoReview }
+			action: STORAGE_MESSAGE_ACTIONS.RATE_VIDEO,
+			params: { authorUrl, authorName, videoUrl, videoTitle, ratingData }
 		});
 	},
 

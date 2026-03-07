@@ -1,4 +1,4 @@
-import type { VideoReview } from '../../infrastructure/storage';
+import type { RatingData } from '../../infrastructure/common/rating-data';
 import { authorReviewsCache } from './author-reviews-cache';
 import { authorReviewsStorage } from '../../infrastructure/storage';
 import { broadcastAuthorReview } from '../broadcast-events/broadcastAuthorReview';
@@ -10,7 +10,7 @@ export const STORAGE_MESSAGE_ACTIONS = {
 	GET_AUTHOR_BY_NAME: 'getAuthorByName',
 	DELETE_AUTHOR: 'deleteAuthor',
 	GET_VIDEO_REVIEW: 'getVideoReview',
-	UPSERT_VIDEO_REVIEW: 'upsertVideoReview',
+	RATE_VIDEO: 'rateVideo',
 	DELETE_VIDEO_REVIEW: 'deleteVideoReview'
 } as const;
 
@@ -67,22 +67,29 @@ function handleStorageMessage(
 				break;
 			}
 
-			case STORAGE_MESSAGE_ACTIONS.UPSERT_VIDEO_REVIEW: {
-				await authorReviewsStorage.upsertVideoReview(
-					params.authorUrl,
-					params.authorName,
-					params.videoReview as VideoReview
-				);
+			case STORAGE_MESSAGE_ACTIONS.RATE_VIDEO: {
+				const ratingData = params.ratingData as RatingData;
+				await authorReviewsStorage.upsertVideoReview(params.authorUrl, params.authorName, {
+					...ratingData,
+					rating: ratingData.rating!,
+					videoUrl: params.videoUrl,
+					videoTitle: params.videoTitle,
+					lastUpdated: Date.now()
+				});
+
 				const updatedAuthor = await authorReviewsStorage.getAuthor(params.authorUrl);
 				authorReviewsCache.upsert(params.authorUrl, updatedAuthor);
+
 				broadcastAuthorReview(updatedAuthor, params.authorUrl);
 				break;
 			}
 
 			case STORAGE_MESSAGE_ACTIONS.DELETE_VIDEO_REVIEW: {
 				await authorReviewsStorage.deleteVideoReview(params.authorUrl, params.videoUrl);
+
 				const updatedAuthor = await authorReviewsStorage.getAuthor(params.authorUrl);
 				authorReviewsCache.upsert(params.authorUrl, updatedAuthor);
+
 				broadcastAuthorReview(updatedAuthor, params.authorUrl);
 				break;
 			}

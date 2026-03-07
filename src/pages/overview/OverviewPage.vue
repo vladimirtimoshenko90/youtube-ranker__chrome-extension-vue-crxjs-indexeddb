@@ -3,6 +3,7 @@
 	import { STORAGE_MESSAGE_ACTIONS } from '@/service-worker/storage-messages/registerStorageMessageHandlers';
 	import { ref, computed, onMounted } from 'vue';
 	import AuthorCard from '../__shared/AuthorCard.vue';
+	import LoadingState from '../__shared/LoadingState.vue';
 
 	const authors = ref<AuthorReview[]>([]);
 	const loading = ref(true);
@@ -45,10 +46,10 @@
 </script>
 
 <template>
-	<div class="overview">
+	<div class="page">
 		<h1>YouTube Ranker — Overview</h1>
 
-		<p v-if="loading" class="status">Loading…</p>
+		<LoadingState v-if="loading" />
 
 		<p v-else-if="!sortedAuthors.length" class="status">No reviews yet.</p>
 
@@ -65,25 +66,8 @@
 </template>
 
 <style scoped lang="scss">
-	.overview {
-		font-family:
-			'Segoe UI',
-			system-ui,
-			-apple-system,
-			sans-serif;
-		max-width: 960px;
-		margin: 0 auto;
-		padding: 24px;
-		color: #1a1a1a;
-
-		h1 {
-			font-size: 1.6rem;
-			margin-bottom: 24px;
-		}
-
-		.status {
-			color: #666;
-			font-size: 0.95rem;
-		}
+	h1 {
+		font-size: 1.6rem;
+		margin-bottom: 24px;
 	}
 </style>

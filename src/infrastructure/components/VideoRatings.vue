@@ -5,8 +5,8 @@
 	import type { RatingData } from '../common/rating-data';
 
 	const props = defineProps<{
-		videoRating: RatingData | undefined;
-		authorRating: number | undefined;
+		videoRating: RatingData | null;
+		authorRating: number | null;
 	}>();
 
 	const emit = defineEmits<{

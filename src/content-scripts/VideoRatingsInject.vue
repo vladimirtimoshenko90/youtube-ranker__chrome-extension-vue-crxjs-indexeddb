@@ -6,7 +6,7 @@
 	import { AuthorReview, VideoReview } from '@/infrastructure/storage';
 	import { SERVICE_WORKER_NOTIFICATION_TYPES } from '@/service-worker/broadcast-events/notification-types';
 	import type { AuthorReviewChangedPayload } from '@/service-worker/broadcast-events/notification-types';
-	import { ref, onMounted } from 'vue';
+	import { ref, onMounted, computed } from 'vue';
 
 	export type RatingsInjectContext = 'home' | 'search' | 'watch-main' | 'watch-sidebar' | 'channel';
 
@@ -18,57 +18,39 @@
 		authorName: string;
 	}>();
 
-	const videoRating = ref<RatingData>();
-	const authorRating = ref<number>();
+	const author = ref<AuthorReview | null>(null);
+	const video = ref<VideoReview | null>(null);
+
+	const authorRating = computed(() => {
+		const ratings = author.value?.reviews.filter((r) => !r.skipped && !!r.rating) || [];
+		return !ratings.length ? null : ratings.reduce((sum, r) => sum + r.rating, 0) / ratings.length;
+	});
+
+	const videoRating = computed(() => {
+		return !!video.value ? { ...video.value } : null;
+	});
 
 	const handleUpdateRating = async (updatedRating: RatingData) => {
 		await swClient.rateVideo(props.authorUrl, props.authorName, props.videoUrl, props.videoTitle, updatedRating);
 	};
 
 	onMounted(async () => {
-		let author: AuthorReview | null = null;
-		let video: VideoReview | null = null;
-
 		if (props.authorUrl) {
-			author = await swClient.getAuthorByUrl(props.authorUrl);
-			video = author?.reviews.find((r) => r.videoUrl === props.videoUrl) || null;
+			author.value = await swClient.getAuthorByUrl(props.authorUrl);
+			video.value = author.value?.reviews.find((r) => r.videoUrl === props.videoUrl) || null;
 		} else {
-			[video, author] = await Promise.all([
-				swClient.getVideoReview(props.videoUrl),
-				swClient.getAuthorByName(props.authorName)
-			]);
-		}
-
-		if (author) {
-			const ratings = author.reviews.filter((r) => !r.skipped && !!r.rating);
-			if (ratings.length) {
-				authorRating.value = ratings.reduce((sum, r) => sum + r.rating, 0) / ratings.length;
-			}
-		}
-
-		if (video) {
-			videoRating.value = { ...video };
+			author.value = await swClient.getAuthorByName(props.authorName);
+			video.value = await swClient.getVideoReview(props.videoUrl);
 		}
 	});
 
 	useServiceWorkerEvent<AuthorReviewChangedPayload>(
 		SERVICE_WORKER_NOTIFICATION_TYPES.AUTHOR_REVIEW_CHANGED,
 		({ entity, authorUrl }) => {
-			if (authorUrl !== props.authorUrl) return;
-
-			if (!entity) {
-				videoRating.value = undefined;
-				authorRating.value = undefined;
-				return;
+			if (authorUrl === props.authorUrl) {
+				author.value = entity;
+				video.value = author.value?.reviews.find((r) => r.videoUrl === props.videoUrl) || null;
 			}
-
-			const ratings = entity.reviews.filter((r) => !r.skipped && !!r.rating);
-			authorRating.value = ratings.length
-				? ratings.reduce((sum, r) => sum + r.rating, 0) / ratings.length
-				: undefined;
-
-			const video = entity.reviews.find((r) => r.videoUrl === props.videoUrl) ?? null;
-			videoRating.value = video ? { ...video } : undefined;
 		}
 	);
 </script>

@@ -8,7 +8,7 @@
 		defineProps<{
 			isOpen: boolean;
 			title: string;
-			data?: RatingData;
+			data: RatingData | null;
 		}>(),
 		{
 			data: () => ({
@@ -24,7 +24,8 @@
 		save: [data: RatingData];
 	}>();
 
-	const formData = ref<RatingData>({ ...props.data });
+	const DEFAULT_FORM_DATA: RatingData = { rating: null, skipped: false, comment: '' };
+	const formData = ref<RatingData>({ ...(props.data ?? DEFAULT_FORM_DATA) });
 
 	const isDataValid = computed(() => {
 		return formData.value.rating !== null || formData.value.skipped;
@@ -45,7 +46,7 @@
 	watch(
 		() => props.data,
 		(data) => {
-			formData.value = { ...data };
+			formData.value = { ...(data ?? DEFAULT_FORM_DATA) };
 		},
 		{ deep: true }
 	);

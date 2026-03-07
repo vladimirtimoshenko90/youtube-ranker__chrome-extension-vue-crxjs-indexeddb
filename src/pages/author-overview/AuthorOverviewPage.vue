@@ -63,10 +63,4 @@
 	</div>
 </template>
 
-<style scoped lang="scss">
-	.page-title {
-		font-size: 1.4rem;
-		font-weight: 600;
-		margin-bottom: 20px;
-	}
-</style>
+<style scoped lang="scss"></style>

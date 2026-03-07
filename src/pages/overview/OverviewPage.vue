@@ -4,6 +4,7 @@
 	import { ref, computed, onMounted } from 'vue';
 	import AuthorCard from '../__shared/AuthorCard.vue';
 	import LoadingState from '../__shared/LoadingState.vue';
+	import NoReviewsYet from './NoReviewsYet.vue';
 
 	const authors = ref<AuthorReview[]>([]);
 	const loading = ref(true);
@@ -47,11 +48,9 @@
 
 <template>
 	<div class="page">
-		<h1>YouTube Ranker — Overview</h1>
-
 		<LoadingState v-if="loading" />
 
-		<p v-else-if="!sortedAuthors.length" class="status">No reviews yet.</p>
+		<NoReviewsYet v-else-if="!sortedAuthors.length" />
 
 		<div v-else class="author-list">
 			<AuthorCard
@@ -66,8 +65,7 @@
 </template>
 
 <style scoped lang="scss">
-	h1 {
-		font-size: 1.6rem;
-		margin-bottom: 24px;
+	.author-card + .author-card {
+		margin-top: 12px;
 	}
 </style>

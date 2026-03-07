@@ -53,10 +53,13 @@
 
 		<AuthorNotFound v-else-if="!author" :author-id="authorId" />
 
-		<template v-else>
-			<h2 class="page-title">Reviews for {{ author.authorName }}</h2>
-			<AuthorCard :author="author" @delete-author="onDeleteAuthor" @delete-review="onDeleteReview" />
-		</template>
+		<AuthorCard
+			v-else
+			:author="author"
+			:always-expanded="true"
+			@delete-author="onDeleteAuthor"
+			@delete-review="onDeleteReview"
+		/>
 	</div>
 </template>
 

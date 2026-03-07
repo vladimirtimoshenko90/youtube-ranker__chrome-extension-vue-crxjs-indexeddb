@@ -6,7 +6,7 @@
 	import VideoReviewsTable from './VideoReviewsTable.vue';
 	import { ref, computed } from 'vue';
 
-	const props = defineProps<{ author: AuthorReview }>();
+	const props = defineProps<{ author: AuthorReview; alwaysExpanded?: boolean }>();
 	const emit = defineEmits<{
 		'delete-author': [authorUrl: string];
 		'delete-review': [authorUrl: string, videoUrl: string];
@@ -30,8 +30,13 @@
 
 <template>
 	<div class="author-card">
-		<div class="author-header" @click="expanded = !expanded">
-			<ExpandToggle :expanded="expanded" />
+		<div
+			class="author-header"
+			:class="{ 'author-header--static': alwaysExpanded }"
+			@click="!alwaysExpanded && (expanded = !expanded)"
+		>
+			<ExpandToggle v-if="!alwaysExpanded" :expanded="expanded" />
+
 			<a class="author-name" :href="author.authorUrl" target="_blank" @click.stop>
 				{{ author.authorName }}
 			</a>
@@ -44,7 +49,7 @@
 			</button>
 		</div>
 
-		<div v-if="expanded" class="reviews-table">
+		<div v-if="alwaysExpanded || expanded" class="reviews-table">
 			<VideoReviewsTable
 				:reviews="author.reviews"
 				@delete-review="(videoUrl) => emit('delete-review', author.authorUrl, videoUrl)"
@@ -68,6 +73,13 @@
 			cursor: pointer;
 			background: #f8f8f8;
 			user-select: none;
+
+			&--static {
+				cursor: default;
+				&:hover {
+					background: #f8f8f8;
+				}
+			}
 
 			&:hover {
 				background: #f0f0f0;

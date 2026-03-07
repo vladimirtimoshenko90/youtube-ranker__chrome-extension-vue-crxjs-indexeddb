@@ -1,7 +1,7 @@
 <script setup lang="ts">
 	import type { VideoReview } from '@/infrastructure/storage';
 	import Rating from '@/infrastructure/components/Rating.vue';
-	import { Trash2 } from 'lucide-vue-next';
+	import { Trash2, XCircle } from 'lucide-vue-next';
 	import { formatDate } from '@/infrastructure/utils/dateUtils';
 
 	const props = defineProps<{ review: VideoReview }>();
@@ -24,7 +24,10 @@
 		</td>
 		<td class="review-cell">
 			<Rating v-if="review.rating" :modelValue="review.rating" :readonly="true" :starSize="16" />
-			<span v-else-if="review.skipped" class="skipped-label">not relevant</span>
+			<span v-else-if="review.skipped" class="skipped-label">
+				<XCircle :size="20" class="skipped-label__icon" />
+				not relevant
+			</span>
 			<div v-if="review.comment" class="review-comment">{{ review.comment }}</div>
 			<div v-if="review.lastUpdated" class="review-date">
 				{{ formatDate(review.lastUpdated) }}
@@ -58,9 +61,17 @@
 		width: 260px;
 
 		.skipped-label {
+			display: inline-flex;
+			align-items: center;
+			gap: 4px;
 			font-style: italic;
 			color: #999;
 			font-size: 0.85rem;
+
+			&__icon {
+				flex-shrink: 0;
+				color: #e53e3e;
+			}
 		}
 
 		.review-comment {

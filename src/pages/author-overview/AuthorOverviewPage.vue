@@ -1,6 +1,6 @@
 <script setup lang="ts">
 	import type { AuthorReview } from '@/infrastructure/storage';
-	import { STORAGE_MESSAGE_ACTIONS } from '@/service-worker/storage-messages/registerStorageMessageHandlers';
+	import { serviceWorkerClient as swClient } from '@/infrastructure/serviceWorkerClient';
 	import { urlUtils } from '@/infrastructure/utils/urlUtils';
 	import { ref, onMounted } from 'vue';
 	import AuthorCard from '../__shared/AuthorCard.vue';
@@ -19,31 +19,27 @@
 			return;
 		}
 
-		author.value = await chrome.runtime.sendMessage({
-			action: STORAGE_MESSAGE_ACTIONS.GET_AUTHOR_BY_URL,
-			params: { authorUrl: `https://www.youtube.com/${authorId.value}` }
-		});
+		author.value = await swClient.getAuthorByUrl(`https://www.youtube.com/${authorId.value}`);
 		loading.value = false;
 	});
 
 	async function onDeleteAuthor(authorUrl: string) {
-		await chrome.runtime.sendMessage({
-			action: STORAGE_MESSAGE_ACTIONS.DELETE_AUTHOR,
-			params: { authorUrl }
-		});
+		await swClient.deleteAuthor(authorUrl);
 		author.value = null;
 	}
 
 	async function onDeleteReview(authorUrl: string, videoUrl: string) {
-		await chrome.runtime.sendMessage({
-			action: STORAGE_MESSAGE_ACTIONS.DELETE_VIDEO_REVIEW,
-			params: { authorUrl, videoUrl }
-		});
-		if (!author.value) return;
-		author.value = {
-			...author.value,
-			reviews: author.value.reviews.filter((r) => r.videoUrl !== videoUrl)
-		};
+		await swClient.deleteVideoReview(authorUrl, videoUrl);
+
+		if (author.value) {
+			author.value = {
+				...author.value,
+				reviews: author.value.reviews.filter((r) => r.videoUrl !== videoUrl)
+			};
+			if (!author.value.reviews.length) {
+				author.value = null;
+			}
+		}
 	}
 </script>
 

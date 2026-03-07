@@ -1,6 +1,6 @@
 <script setup lang="ts">
 	import type { AuthorReview } from '@/infrastructure/storage';
-	import { STORAGE_MESSAGE_ACTIONS } from '@/service-worker/storage-messages/registerStorageMessageHandlers';
+	import { serviceWorkerClient as swClient } from '@/infrastructure/serviceWorkerClient';
 	import { ref, computed, onMounted } from 'vue';
 	import AuthorCard from '../__shared/AuthorCard.vue';
 	import LoadingState from '../__shared/LoadingState.vue';
@@ -18,30 +18,24 @@
 	);
 
 	onMounted(async () => {
-		authors.value = await chrome.runtime.sendMessage({
-			action: STORAGE_MESSAGE_ACTIONS.LIST_AUTHORS
-		});
+		authors.value = await swClient.listAuthors();
 		loading.value = false;
 	});
 
 	async function onDeleteAuthor(authorUrl: string) {
-		await chrome.runtime.sendMessage({
-			action: STORAGE_MESSAGE_ACTIONS.DELETE_AUTHOR,
-			params: { authorUrl }
-		});
+		await swClient.deleteAuthor(authorUrl);
 		authors.value = authors.value.filter((a) => a.authorUrl !== authorUrl);
 	}
 
 	async function onDeleteReview(authorUrl: string, videoUrl: string) {
-		await chrome.runtime.sendMessage({
-			action: STORAGE_MESSAGE_ACTIONS.DELETE_VIDEO_REVIEW,
-			params: { authorUrl, videoUrl }
-		});
+		await swClient.deleteVideoReview(authorUrl, videoUrl);
+
 		const author = authors.value.find((a) => a.authorUrl === authorUrl);
-		if (!author) return;
-		author.reviews = author.reviews.filter((r) => r.videoUrl !== videoUrl);
-		if (author.reviews.length === 0) {
-			authors.value = authors.value.filter((a) => a.authorUrl !== authorUrl);
+		if (author) {
+			author.reviews = author.reviews.filter((r) => r.videoUrl !== videoUrl);
+			if (!author.reviews.length) {
+				authors.value = authors.value.filter((a) => a.authorUrl !== authorUrl);
+			}
 		}
 	}
 </script>

@@ -1,8 +1,8 @@
 <script setup lang="ts">
 	import { RatingData } from '@/infrastructure/common/rating-data';
 	import VideoRatings from '@/infrastructure/components/VideoRatings.vue';
+	import { serviceWorkerClient as swClient } from '@/infrastructure/serviceWorkerClient';
 	import { AuthorReview, VideoReview } from '@/infrastructure/storage';
-	import { STORAGE_MESSAGE_ACTIONS } from '@/service-worker/storage-messages/registerStorageMessageHandlers';
 	import { ref, onMounted } from 'vue';
 
 	export type RatingsInjectContext = 'home' | 'search' | 'watch-main' | 'watch-sidebar' | 'channel';
@@ -19,17 +19,12 @@
 	const authorRating = ref<number>();
 
 	const handleUpdateRating = async (updatedRating: RatingData) => {
-		await chrome.runtime.sendMessage({
-			action: STORAGE_MESSAGE_ACTIONS.UPSERT_VIDEO_REVIEW,
-			params: {
-				authorUrl: props.authorUrl,
-				authorName: props.authorName,
-				videoReview: {
-					videoUrl: props.videoUrl,
-					videoTitle: props.videoTitle,
-					...updatedRating
-				}
-			}
+		await swClient.upsertVideoReview(props.authorUrl, props.authorName, {
+			videoUrl: props.videoUrl,
+			videoTitle: props.videoTitle,
+			...updatedRating,
+			rating: updatedRating.rating!,
+			lastUpdated: Date.now()
 		});
 	};
 
@@ -38,21 +33,12 @@
 		let video: VideoReview | null = null;
 
 		if (props.authorUrl) {
-			author = await chrome.runtime.sendMessage({
-				action: STORAGE_MESSAGE_ACTIONS.GET_AUTHOR_BY_URL,
-				params: { authorUrl: props.authorUrl }
-			});
+			author = await swClient.getAuthorByUrl(props.authorUrl);
 			video = author?.reviews.find((r) => r.videoUrl === props.videoUrl) || null;
 		} else {
 			[video, author] = await Promise.all([
-				chrome.runtime.sendMessage({
-					action: STORAGE_MESSAGE_ACTIONS.GET_VIDEO_REVIEW,
-					params: { videoUrl: props.videoUrl }
-				}),
-				chrome.runtime.sendMessage({
-					action: STORAGE_MESSAGE_ACTIONS.GET_AUTHOR_BY_NAME,
-					params: { authorName: props.authorName }
-				})
+				swClient.getVideoReview(props.videoUrl),
+				swClient.getAuthorByName(props.authorName)
 			]);
 		}
 

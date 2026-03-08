@@ -12,6 +12,7 @@
 
 	const props = defineProps<{
 		context: RatingsInjectContext;
+		readOnly: boolean;
 		videoUrl: string;
 		videoTitle: string;
 		authorUrl: string | null;
@@ -66,6 +67,7 @@
 			:videoRating="videoRating"
 			:authorRating="authorRating"
 			:authorUrl="props.authorUrl"
+			:readOnly="props.readOnly"
 			@updateRating="handleUpdateRating"
 			@deleteRating="handleDeleteRating"
 		/>

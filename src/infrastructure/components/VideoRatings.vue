@@ -9,6 +9,7 @@
 		videoRating: RatingData | null;
 		authorRating: number | null;
 		authorUrl: string | null;
+		readOnly?: boolean;
 	}>();
 
 	const emit = defineEmits<{
@@ -30,18 +31,18 @@
 </script>
 
 <template>
-	<div class="video-metrics" @click="isModalOpen = true">
-		<span v-if="!videoRating" class="rate-prompt">Rate video?</span>
+	<div class="video-metrics" @click="!props.readOnly && (isModalOpen = true)">
+		<span v-if="!videoRating" class="rate-prompt">{{ props.readOnly ? 'not rated yet' : 'Rate video?' }}</span>
 		<span class="skipped" v-else-if="videoRating.skipped">
 			<MinusCircle :size="14" />
 			<span class="skipped__text">not relevant</span>
-			<button class="delete-btn" @click.stop.prevent="emit('deleteRating')">
+			<button v-if="!props.readOnly" class="delete-btn" @click.stop.prevent="emit('deleteRating')">
 				<Trash2 :size="18" />
 			</button>
 		</span>
 		<span v-else class="rating-row">
 			<Rating :model-value="videoRating.rating" :star-size="24" readonly />
-			<button class="delete-btn" @click.stop.prevent="emit('deleteRating')">
+			<button v-if="!props.readOnly" class="delete-btn" @click.stop.prevent="emit('deleteRating')">
 				<Trash2 :size="18" />
 			</button>
 		</span>

@@ -12,7 +12,7 @@ function handleHomeVideos() {
 		const el_authorLink = el_video.querySelector('a.yt-core-attributed-string__link');
 		if (!el_videoLink || !el_authorLink) return;
 
-		injectRatings(el_injectInto, 'home', {
+		injectRatings(el_injectInto, 'home', true, {
 			videoUrl: `https://www.youtube.com${el_videoLink.getAttribute('href')}`,
 			videoTitle: el_videoLink.textContent,
 			authorUrl: `https://www.youtube.com${el_authorLink.getAttribute('href')}`,
@@ -31,7 +31,7 @@ function handleSearchVideos() {
 		const el_authorLink = el_video.querySelector('ytd-channel-name a.yt-simple-endpoint');
 		if (!el_injectInto || !el_videoLink || !el_authorLink) return;
 
-		injectRatings(el_injectInto, 'search', {
+		injectRatings(el_injectInto, 'search', true, {
 			videoUrl: `https://www.youtube.com${el_videoLink.getAttribute('href')}`,
 			videoTitle: el_videoLink.textContent,
 			authorUrl: `https://www.youtube.com${el_authorLink.getAttribute('href')}`,
@@ -52,7 +52,7 @@ function handleWatchMain() {
 	const el_authorLink = el_primaryInner.querySelector('.ytd-channel-name a.yt-simple-endpoint');
 	if (!el_injectInto || !el_videoTitle || !el_authorLink) return;
 
-	injectRatings(el_injectInto, 'watch-main', {
+	injectRatings(el_injectInto, 'watch-main', false, {
 		videoUrl: window.location.href,
 		videoTitle: el_videoTitle.textContent,
 		authorUrl: `https://www.youtube.com${el_authorLink.getAttribute('href')}`,
@@ -72,7 +72,7 @@ function handleWatchSidebar() {
 		);
 		if (!el_injectInto || !el_videoLink || !el_authorName) return;
 
-		injectRatings(el_injectInto, 'watch-sidebar', {
+		injectRatings(el_injectInto, 'watch-sidebar', true, {
 			videoUrl: `https://www.youtube.com${el_videoLink.getAttribute('href')}`,
 			videoTitle: el_videoLink.textContent,
 			authorUrl: null,
@@ -96,7 +96,7 @@ function handleChannelVideos() {
 		);
 		if (!el_injectInto || !el_videoLink || !el_authorName || !el_authorId) return;
 
-		injectRatings(el_injectInto, 'channel', {
+		injectRatings(el_injectInto, 'channel', true, {
 			videoUrl: `https://www.youtube.com${el_videoLink.getAttribute('href')}`,
 			videoTitle: el_videoLink.textContent,
 			authorUrl: `https://www.youtube.com/${el_authorId.textContent}`,
@@ -116,6 +116,7 @@ setInterval(() => {
 function injectRatings(
 	el_injectInto: Element,
 	context: RatingsInjectContext,
+	readOnly: boolean,
 	videoInfo: {
 		videoUrl: string;
 		videoTitle: string;
@@ -126,7 +127,7 @@ function injectRatings(
 	const el_root = document.createElement('div');
 	el_injectInto.appendChild(el_root);
 
-	const app = createApp(VideoRatingsInject, { ...videoInfo, context });
+	const app = createApp(VideoRatingsInject, { ...videoInfo, context, readOnly });
 
 	app.mount(el_root);
 }

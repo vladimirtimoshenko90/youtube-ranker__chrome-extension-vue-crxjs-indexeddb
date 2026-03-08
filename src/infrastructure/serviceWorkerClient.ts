@@ -1,5 +1,5 @@
 import type { AuthorReview } from './storage';
-
+import { OTHER_MESSAGE_ACTIONS } from '@/service-worker/other-messages/registerOtherMessageHandlers';
 import type { RatingData } from './common/rating-data';
 import { STORAGE_MESSAGE_ACTIONS } from '@/service-worker/storage-messages/registerStorageMessageHandlers';
 
@@ -48,6 +48,13 @@ export const serviceWorkerClient = {
 		return chrome.runtime.sendMessage({
 			action: STORAGE_MESSAGE_ACTIONS.DELETE_VIDEO_REVIEW,
 			params: { authorUrl, videoUrl }
+		});
+	},
+
+	openAuthorOverview(authorId: string): Promise<void> {
+		return chrome.runtime.sendMessage({
+			action: OTHER_MESSAGE_ACTIONS.OPEN_AUTHOR_OVERVIEW,
+			params: { authorId }
 		});
 	}
 };

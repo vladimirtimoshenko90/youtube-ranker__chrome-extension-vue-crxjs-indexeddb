@@ -1,9 +1,10 @@
 <script setup lang="ts">
-	import { ref, computed } from 'vue';
+	import { ref } from 'vue';
 	import { MinusCircle, Trash2 } from 'lucide-vue-next';
 	import RatingModal from './RatingModal.vue';
 	import Rating from './Rating.vue';
 	import type { RatingData } from '../common/rating-data';
+	import { serviceWorkerClient as swClient } from '../serviceWorkerClient';
 
 	const props = defineProps<{
 		videoRating: RatingData | null;
@@ -23,11 +24,11 @@
 		emit('updateRating', data);
 	};
 
-	const authorOverviewHref = computed(() => {
-		if (!props.authorUrl) return null;
+	const openAuthorOverview = () => {
+		if (!props.authorUrl) return;
 		const authorId = new URL(props.authorUrl).pathname.slice(1);
-		return chrome.runtime.getURL(`src/pages/author-overview/author-overview.html?authorId=${authorId}`);
-	});
+		swClient.openAuthorOverview(authorId);
+	};
 </script>
 
 <template>
@@ -51,9 +52,7 @@
 
 		<div v-if="authorRating" class="author-rating">
 			<Rating :model-value="authorRating" :star-size="15" readonly />
-			<a v-if="authorOverviewHref" :href="authorOverviewHref" target="_blank" class="author-link" @click.stop>
-				Author
-			</a>
+			<button v-if="props.authorUrl" class="author-link" @click.stop.prevent="openAuthorOverview">Author</button>
 			<span v-else>Author</span>
 		</div>
 	</div>
@@ -135,6 +134,11 @@
 		}
 
 		.author-link {
+			background: none;
+			border: none;
+			padding: 0;
+			font: inherit;
+			cursor: pointer;
 			color: #2563eb;
 			text-decoration: underline;
 			&:hover {

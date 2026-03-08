@@ -13,10 +13,10 @@ function handleHomeVideos() {
 		if (!el_videoLink || !el_authorLink) return;
 
 		injectRatings(el_injectInto, 'home', true, {
-			videoUrl: `https://www.youtube.com${el_videoLink.getAttribute('href')}`,
-			videoTitle: el_videoLink.textContent,
-			authorUrl: `https://www.youtube.com${el_authorLink.getAttribute('href')}`,
-			authorName: el_authorLink.textContent
+			videoUrl: `https://www.youtube.com${el_videoLink.getAttribute('href')!.trim()}`,
+			videoTitle: el_videoLink.textContent!.trim(),
+			authorUrl: `https://www.youtube.com${el_authorLink.getAttribute('href')!.trim()}`,
+			authorName: el_authorLink.textContent!.trim()
 		});
 	});
 }
@@ -32,10 +32,10 @@ function handleSearchVideos() {
 		if (!el_injectInto || !el_videoLink || !el_authorLink) return;
 
 		injectRatings(el_injectInto, 'search', true, {
-			videoUrl: `https://www.youtube.com${el_videoLink.getAttribute('href')}`,
-			videoTitle: el_videoLink.textContent,
-			authorUrl: `https://www.youtube.com${el_authorLink.getAttribute('href')}`,
-			authorName: el_authorLink.textContent
+			videoUrl: `https://www.youtube.com${el_videoLink.getAttribute('href')!.trim()}`,
+			videoTitle: el_videoLink.textContent!.trim(),
+			authorUrl: `https://www.youtube.com${el_authorLink.getAttribute('href')!.trim()}`,
+			authorName: el_authorLink.textContent!.trim()
 		});
 	});
 }
@@ -53,10 +53,10 @@ function handleWatchMain() {
 	if (!el_injectInto || !el_videoTitle || !el_authorLink) return;
 
 	injectRatings(el_injectInto, 'watch-main', false, {
-		videoUrl: window.location.href,
-		videoTitle: el_videoTitle.textContent,
-		authorUrl: `https://www.youtube.com${el_authorLink.getAttribute('href')}`,
-		authorName: el_authorLink.textContent
+		videoUrl: window.location.href.trim(),
+		videoTitle: el_videoTitle.textContent!.trim(),
+		authorUrl: `https://www.youtube.com${el_authorLink.getAttribute('href')!.trim()}`,
+		authorName: el_authorLink.textContent!.trim()
 	});
 }
 
@@ -73,10 +73,10 @@ function handleWatchSidebar() {
 		if (!el_injectInto || !el_videoLink || !el_authorName) return;
 
 		injectRatings(el_injectInto, 'watch-sidebar', true, {
-			videoUrl: `https://www.youtube.com${el_videoLink.getAttribute('href')}`,
-			videoTitle: el_videoLink.textContent,
+			videoUrl: `https://www.youtube.com${el_videoLink.getAttribute('href')!.trim()}`,
+			videoTitle: el_videoLink.textContent!.trim(),
 			authorUrl: null,
-			authorName: el_authorName.textContent
+			authorName: el_authorName.textContent!.trim()
 		});
 	});
 }
@@ -97,10 +97,10 @@ function handleChannelVideos() {
 		if (!el_injectInto || !el_videoLink || !el_authorName || !el_authorId) return;
 
 		injectRatings(el_injectInto, 'channel', true, {
-			videoUrl: `https://www.youtube.com${el_videoLink.getAttribute('href')}`,
-			videoTitle: el_videoLink.textContent,
-			authorUrl: `https://www.youtube.com/${el_authorId.textContent}`,
-			authorName: el_authorName.textContent
+			videoUrl: `https://www.youtube.com${el_videoLink.getAttribute('href')!.trim()}`,
+			videoTitle: el_videoLink.textContent!.trim(),
+			authorUrl: `https://www.youtube.com/${el_authorId.textContent!.trim()}`,
+			authorName: el_authorName.textContent!.trim()
 		});
 	});
 }

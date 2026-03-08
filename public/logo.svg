@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <!-- Red rounded background -->
+  <rect x="2" y="8" width="44" height="32" rx="8" fill="#FF0000"/>
+  <!-- White play triangle -->
+  <polygon points="19,16 19,32 33,24" fill="white"/>
+  <!-- Gold star badge (top-right) - 30% bigger, solid fill -->
+  <polygon points="36,-2.3 39.6,7.5 50,7.8 41.7,14.1 44.6,24.1 36,18.3 27.4,24.1 30.3,14.1 22.1,7.8 32.5,7.5" fill="#FFD700"/>
+</svg>

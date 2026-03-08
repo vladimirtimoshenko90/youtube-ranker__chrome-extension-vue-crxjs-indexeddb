@@ -25,13 +25,14 @@ function handleSearchVideos() {
 		if (el_video?.querySelector('.rating-root')) return;
 
 		const el_injectInto = el_video;
-		const el_videoLink = el_video.querySelector('a#video-title yt-formatted-string');
+		const el_videoLink = el_video.querySelector('a#video-title');
+		const el_videoTitle = el_videoLink?.querySelector('yt-formatted-string');
 		const el_authorLink = el_video.querySelector('ytd-channel-name a.yt-simple-endpoint');
-		if (!el_injectInto || !el_videoLink || !el_authorLink) return;
+		if (!el_injectInto || !el_videoLink || !el_videoTitle || !el_authorLink) return;
 
 		injectRatings(el_injectInto, 'search', true, {
 			videoUrl: `https://www.youtube.com${el_videoLink.getAttribute('href')!.trim()}`,
-			videoTitle: el_videoLink.textContent!.trim(),
+			videoTitle: el_videoTitle.textContent!.trim(),
 			authorUrl: `https://www.youtube.com${el_authorLink.getAttribute('href')!.trim()}`,
 			authorName: el_authorLink.textContent!.trim()
 		});

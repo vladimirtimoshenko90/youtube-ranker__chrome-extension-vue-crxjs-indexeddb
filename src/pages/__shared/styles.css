@@ -35,3 +35,11 @@ body {
 	color: #dc3545;
 	background: rgba(220, 53, 69, 0.08);
 }
+
+.secondary-url {
+	display: block;
+	font-size: 0.75rem;
+	color: #aaa;
+	word-break: break-all;
+	margin-top: 2px;
+}

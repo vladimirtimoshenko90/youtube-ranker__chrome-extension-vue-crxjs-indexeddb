@@ -40,6 +40,7 @@
 			<a class="author-card__name" :href="author.authorUrl" target="_blank" @click.stop>
 				{{ author.authorName }}
 			</a>
+			<span class="secondary-url">{{ author.authorUrl }}</span>
 
 			<div class="author-card__details">
 				<span class="author-card__count">
@@ -53,6 +54,7 @@
 		</div>
 
 		<div v-if="alwaysExpanded || expanded" class="author-card__body">
+			<hr class="author-card__divider" />
 			<VideoReviewsTable
 				:reviews="author.reviews"
 				@delete-review="(videoUrl) => emit('delete-review', author.authorUrl, videoUrl)"
@@ -131,6 +133,12 @@
 
 		&__body {
 			padding: 0 24px;
+		}
+
+		&__divider {
+			border: none;
+			border-top: 1px solid #f0f1f3;
+			margin: 0 0 4px;
 		}
 	}
 </style>

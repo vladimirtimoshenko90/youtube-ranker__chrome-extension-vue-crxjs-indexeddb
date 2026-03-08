@@ -21,6 +21,7 @@
 			<a :href="review.videoUrl" target="_blank" class="review-row__link">
 				{{ review.videoTitle || review.videoUrl }}
 			</a>
+			<span v-if="review.videoTitle" class="secondary-url">{{ review.videoUrl }}</span>
 		</div>
 
 		<div class="review-row__info">

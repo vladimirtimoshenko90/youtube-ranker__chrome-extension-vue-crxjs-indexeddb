@@ -43,11 +43,10 @@
 	onMounted(async () => {
 		if (props.authorUrl) {
 			author.value = await swClient.getAuthorByUrl(props.authorUrl);
-			video.value = author.value?.reviews.find((r) => r.videoUrl === props.videoUrl) || null;
 		} else {
 			author.value = await swClient.getAuthorByName(props.authorName);
-			video.value = await swClient.getVideoReview(props.videoUrl);
 		}
+		video.value = author.value?.reviews.find((r) => r.videoUrl === props.videoUrl) || null;
 	});
 
 	useServiceWorkerEvent<AuthorReviewChangedPayload>(

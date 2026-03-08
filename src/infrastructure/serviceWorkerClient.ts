@@ -1,4 +1,4 @@
-import type { AuthorReview, VideoReview } from './storage';
+import type { AuthorReview } from './storage';
 
 import type { RatingData } from './common/rating-data';
 import { STORAGE_MESSAGE_ACTIONS } from '@/service-worker/storage-messages/registerStorageMessageHandlers';
@@ -28,13 +28,6 @@ export const serviceWorkerClient = {
 		return chrome.runtime.sendMessage({
 			action: STORAGE_MESSAGE_ACTIONS.DELETE_AUTHOR,
 			params: { authorUrl }
-		});
-	},
-
-	getVideoReview(videoUrl: string): Promise<VideoReview | null> {
-		return chrome.runtime.sendMessage({
-			action: STORAGE_MESSAGE_ACTIONS.GET_VIDEO_REVIEW,
-			params: { videoUrl }
 		});
 	},
 

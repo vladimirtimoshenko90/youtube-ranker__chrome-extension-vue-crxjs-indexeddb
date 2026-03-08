@@ -9,7 +9,6 @@ export const STORAGE_MESSAGE_ACTIONS = {
 	GET_AUTHOR_BY_URL: 'getAuthor',
 	GET_AUTHOR_BY_NAME: 'getAuthorByName',
 	DELETE_AUTHOR: 'deleteAuthor',
-	GET_VIDEO_REVIEW: 'getVideoReview',
 	RATE_VIDEO: 'rateVideo',
 	DELETE_VIDEO_REVIEW: 'deleteVideoReview'
 } as const;
@@ -62,11 +61,6 @@ function handleStorageMessage(
 			}
 
 			// Video review operations
-			case STORAGE_MESSAGE_ACTIONS.GET_VIDEO_REVIEW: {
-				result = await authorReviewsStorage.getVideoReview(params.videoUrl);
-				break;
-			}
-
 			case STORAGE_MESSAGE_ACTIONS.RATE_VIDEO: {
 				const ratingData = params.ratingData as RatingData;
 				await authorReviewsStorage.upsertVideoReview(params.authorUrl, params.authorName, {

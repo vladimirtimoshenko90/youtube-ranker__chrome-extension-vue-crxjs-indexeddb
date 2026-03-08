@@ -34,6 +34,11 @@
 		await swClient.rateVideo(props.authorUrl, props.authorName, props.videoUrl, props.videoTitle, updatedRating);
 	};
 
+	const handleDeleteRating = async () => {
+		if (!confirm(`Remove your rating for "${props.videoTitle}"?`)) return;
+		await swClient.deleteVideoReview(props.authorUrl ?? author.value?.authorUrl ?? '', props.videoUrl);
+	};
+
 	onMounted(async () => {
 		if (props.authorUrl) {
 			author.value = await swClient.getAuthorByUrl(props.authorUrl);
@@ -62,6 +67,7 @@
 			:authorRating="authorRating"
 			:authorUrl="props.authorUrl"
 			@updateRating="handleUpdateRating"
+			@deleteRating="handleDeleteRating"
 		/>
 	</div>
 </template>

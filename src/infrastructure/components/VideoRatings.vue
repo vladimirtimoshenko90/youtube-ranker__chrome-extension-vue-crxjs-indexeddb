@@ -1,6 +1,6 @@
 <script setup lang="ts">
 	import { ref, computed } from 'vue';
-	import { MinusCircle } from 'lucide-vue-next';
+	import { MinusCircle, Trash2 } from 'lucide-vue-next';
 	import RatingModal from './RatingModal.vue';
 	import Rating from './Rating.vue';
 	import type { RatingData } from '../common/rating-data';
@@ -13,6 +13,7 @@
 
 	const emit = defineEmits<{
 		updateRating: [data: RatingData];
+		deleteRating: [];
 	}>();
 
 	const isModalOpen = ref(false);
@@ -34,12 +35,20 @@
 		<span class="skipped" v-else-if="videoRating.skipped">
 			<MinusCircle :size="14" />
 			<span class="skipped__text">not relevant</span>
+			<button class="delete-btn" @click.stop.prevent="emit('deleteRating')">
+				<Trash2 :size="18" />
+			</button>
 		</span>
-		<Rating v-else :model-value="videoRating.rating" :star-size="24" readonly />
+		<span v-else class="rating-row">
+			<Rating :model-value="videoRating.rating" :star-size="24" readonly />
+			<button class="delete-btn" @click.stop.prevent="emit('deleteRating')">
+				<Trash2 :size="18" />
+			</button>
+		</span>
 
 		<p v-if="videoRating?.comment" class="comment">{{ videoRating.comment }}</p>
 
-		<div v-if="authorRating" class="rating-item">
+		<div v-if="authorRating" class="author-rating">
 			<Rating :model-value="authorRating" :star-size="15" readonly />
 			<a v-if="authorOverviewHref" :href="authorOverviewHref" target="_blank" class="author-link" @click.stop>
 				Author
@@ -67,6 +76,24 @@
 		font-size: 15px;
 		color: #222;
 		cursor: pointer;
+
+		.rating-row {
+			display: inline-flex;
+			align-items: center;
+			gap: 6px;
+		}
+
+		.delete-btn {
+			display: flex;
+			background: none;
+			border: none;
+			padding: 2px;
+			cursor: pointer;
+			color: #7e0707;
+			&:hover {
+				color: #dc2626;
+			}
+		}
 
 		.rate-prompt {
 			font-size: 18px;
@@ -100,7 +127,7 @@
 			text-align: center;
 		}
 
-		.rating-item {
+		.author-rating {
 			display: flex;
 			align-items: center;
 			gap: 5px;

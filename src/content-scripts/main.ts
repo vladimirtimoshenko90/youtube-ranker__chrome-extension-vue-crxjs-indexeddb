@@ -1,6 +1,4 @@
-import VideoRatingsInject, { RatingsInjectContext } from './VideoRatingsInject.vue';
-
-import { createApp } from 'vue';
+import { injectRatings } from './injectRatings';
 
 function handleHomeVideos() {
 	if (window.location.pathname !== '/') return;
@@ -112,22 +110,3 @@ setInterval(() => {
 	handleWatchSidebar();
 	handleChannelVideos();
 }, 1000);
-
-function injectRatings(
-	el_injectInto: Element,
-	context: RatingsInjectContext,
-	readOnly: boolean,
-	videoInfo: {
-		videoUrl: string;
-		videoTitle: string;
-		authorUrl: string | null;
-		authorName: string;
-	}
-): void {
-	const el_root = document.createElement('div');
-	el_injectInto.appendChild(el_root);
-
-	const app = createApp(VideoRatingsInject, { ...videoInfo, context, readOnly });
-
-	app.mount(el_root);
-}

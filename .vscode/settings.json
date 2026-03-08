@@ -4,6 +4,7 @@
 	"javascript.preferences.quoteStyle": "single",
 	"files.exclude": {
 		"dist": true,
+		"release": true,
 		"tsconfig.tsbuildinfo": true
 	},
 	"search.exclude": {

@@ -57,7 +57,12 @@
 
 <template>
 	<div :class="`rating-root rating-root__${props.context}`" @click.stop.prevent="() => {}">
-		<VideoRatings :videoRating="videoRating" :authorRating="authorRating" @updateRating="handleUpdateRating" />
+		<VideoRatings
+			:videoRating="videoRating"
+			:authorRating="authorRating"
+			:authorUrl="props.authorUrl"
+			@updateRating="handleUpdateRating"
+		/>
 	</div>
 </template>
 
@@ -66,7 +71,7 @@
 		position: absolute;
 		top: 0;
 		z-index: 1100;
-		background: rgba(255, 255, 255, 0.5);
+		background: rgba(255, 255, 255, 0.75);
 
 		&.rating-root__home {
 			right: 0;

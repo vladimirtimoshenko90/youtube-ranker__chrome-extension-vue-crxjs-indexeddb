@@ -44,9 +44,9 @@
 	};
 
 	watch(
-		() => props.data,
-		(data) => {
-			formData.value = { ...(data ?? DEFAULT_FORM_DATA) };
+		() => [props.isOpen, props.data] as const,
+		() => {
+			formData.value = { ...(props.data ?? DEFAULT_FORM_DATA) };
 		},
 		{ deep: true }
 	);

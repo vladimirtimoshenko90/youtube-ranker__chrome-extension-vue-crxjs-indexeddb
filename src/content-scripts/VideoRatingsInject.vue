@@ -47,7 +47,7 @@
 	useServiceWorkerEvent<AuthorReviewChangedPayload>(
 		SERVICE_WORKER_NOTIFICATION_TYPES.AUTHOR_REVIEW_CHANGED,
 		({ entity, authorUrl }) => {
-			if (authorUrl === props.authorUrl) {
+			if (authorUrl === props.authorUrl || authorUrl === author.value?.authorUrl) {
 				author.value = entity;
 				video.value = author.value?.reviews.find((r) => r.videoUrl === props.videoUrl) || null;
 			}
